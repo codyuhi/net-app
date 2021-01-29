@@ -1,0 +1,1316 @@
+openapi: 3.0.0
+info:
+  title: "NetApp"
+  description: "This web application allows users to easily track networking interactions with acquaintances, keep tabs on all outstanding job applications, and ensure career goals are met.  By consistent leverage of this application, users can rest assured that networking and finding references will not be a problem in their job search."
+  contact:
+    name: "Cody Uhi"
+    url: "http://netapp.codyuhi.me"
+    email: "codylkuhi@gmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "https://www.apache.org/licenses/LICENSE-2.0.html"
+  version: 0.0.1
+servers:
+  - url: "http://netapp.codyuhi.me"
+    description: "The production server for the NetApp, hosted in a Digital Ocean cloud server.  Asset located in San Francisco, CA."
+  - url: "http://netapp-dev.codyuhi.me"
+    description: "The development server for the NetApp, hosted in a Digital Ocean cloud server.  Asset located in San Francisco, CA."
+paths:
+  # User Account Endpoints
+  /accounts:
+    summary: "Endpoint for operations related to User Accounts"
+    post:
+      tags:
+        - "accounts"
+        - "create"
+      summary: "Create User Account"
+      operationId: "create-account"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Account"
+      responses:
+        "201":
+          description: "Created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+        "400":
+          description: "Invalid Account input"
+  /accounts/{accountId}:
+    summary: "Endpoint for operations related to a single, identified User Account"
+    get:
+      tags:
+        - "accounts"
+        - "read"
+      summary: "Get User Account by id"
+      description: "This can only be done by the User Account(s) who holds the correct permissions"
+      operationId: "get-account"
+      parameters:
+        - name: "accountId"
+          in: "path"
+          description: "The unique User Account identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "User Account data successfully retrieved"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficent permissions"
+        "404":
+          description: "Unable to find user by id"
+    put:
+      tags:
+        - "accounts"
+        - "update"
+      summary: "Update User Account data"
+      description: "This can only be done by the User Account(s) who holds the correct permissions"
+      operationId: "update-account"
+      parameters:
+        - name: "accountId"
+          in: "path"
+          description: "The unique User Account identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Account"
+      responses:
+        "200":
+          description: "Updated"
+        "400":
+          description: "Invalid data provided"
+        "403":
+          description: "Insufficient permissions to update User Account"
+        "404":
+          description: "Unable to find user"
+    delete:
+      tags:
+        - "accounts"
+        - "delete"
+      summary: "Delete User Account"
+      description: "This can only be done by the User Account(s) who holds the correct permissions"
+      operationId: "delete-account"
+      parameters:
+        - name: "accountId"
+          in: "path"
+          description: "The unique User Account identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "204":
+          description: "User Account deleted"
+        "403":
+          description: "Insufficient permissions to delete User Account"
+        "404":
+          description: "Unable to find User Account by id"
+  /accounts/login:
+    summary: "Endpoint for the login operation"
+    post:
+      tags:
+        - "auth"
+        - "create"
+      summary: "Login as user"
+      operationId: "login"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Login"
+      responses:
+        "201":
+          description: "Authentication successful"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthToken"
+        "400":
+          description: "Invalid login data format provided"
+        "403":
+          description: "Invalid username/password combination"
+  /accounts/logout:
+    summary: "Endpoint for the logout operation"
+    delete:
+      tags:
+        - "auth"
+        - "delete"
+      parameters:
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      summary: "Logout the authenticated user"
+      operationId: "logout"
+      responses:
+        "204":
+          description: "Logged out successfully"
+        "400":
+          description: "Invalid request"
+  # Person Endpoints
+  /persons:
+    summary: "Endpoint for operations related to Persons"
+    post:
+      tags:
+        - "persons"
+        - "create"
+      summary: "Create Person"
+      operationId: "create-person"
+      parameters:
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Person"
+      responses:
+        "201":
+          description: "Created Person successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Person"
+        "400":
+          description: "Invalid Person input"
+        "403":
+          description: "Insufficient permissions"
+    get:
+      tags:
+        - "persons"
+        - "networks"
+        - "read"
+      summary: "Get all Persons in network"
+      operationId: "get-all-persons"
+      parameters:
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "All Persons in the User's network retrieved successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Network"
+        "400":
+          description: "Invalid request"
+        "404":
+          description: "No Persons found for the authenticated User Account's network"
+  /persons/{personId}:
+    get:
+      tags:
+        - "persons"
+        - "read"
+      summary: "Get Person data by id"
+      operationId: "get-person"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "The unique Person identifier"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "Person data successfully retrieved"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Person"
+        "404":
+          description: "Unable to find Person by id"
+    put:
+      tags:
+        - "persons"
+        - "update"
+      summary: "Update Person data"
+      operationId: "update-person"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "The unique Person identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Person data updated successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Person"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Person by id"
+    delete:
+      tags:
+        - "persons"
+        - "delete"
+      summary: "Delete Person"
+      description: "This can only be done by the User Account(s) who holds the correct permissions"
+      operationId: "delete-person"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "The unique Person identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "204":
+          description: "Person deleted"
+        "403":
+          description: "Insufficient permissions to delete Person"
+        "404":
+          description: "Unable to find Person by id"
+  /persons/{personId}/network:
+    summary: "Endpoint for operations related to Person networks"
+    post:
+      tags:
+        - "networks"
+        - "persons"
+        - "create"
+      summary: "Add Person to network"
+      operationId: "add-person-to-network"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "The unique Person identifier"
+          schema:
+            type: "string"
+          required: true
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                personId:
+                  type: "string"
+                  format: "uuid"
+      responses:
+        "201":
+          description: "Added Person to network successfully"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+    get:
+      tags:
+        - "persons"
+        - "networks"
+        - "read"
+      summary: "Get a list of Persons based on network"
+      operationId: "get-persons-by-network"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "The unique Person identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Persons data successfully retrieved"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Network"
+        "400":
+          description: "Invalid request"
+        "404":
+          description: "No Persons found for the authenticated User Account's network"
+  /persons/{personId}/network/{person2Id}:
+    summary: "Endpoint for operations related to the Network connection between two Persons"
+    delete:
+      tags:
+        - "networks"
+        - "persons"
+        - "delete"
+      summary: "Delete Person from network"
+      operationId: "delete-person-from-network"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "The unique Person identifier for the root Person"
+          schema:
+            type: "string"
+          required: true
+        - name: "person2Id"
+          in: "path"
+          description: "The unique Person identifier for the Person to be removed from the network"
+          schema:
+            type: "string"
+          required: true
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "204":
+          description: "Deleted Person from network"
+        "403":
+          description: "Insufficient permissions to delete Person from network"
+        "404":
+          description: "Unable to find Person by id"
+  /persons/{personId}/dateRequested:
+    put:
+      tags:
+        - "persons"
+        - "update"
+      summary: "Update Date Requested data"
+      operationId: "update-date-requested"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "The unique Person identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Date Requested updated successfully"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Person by id"
+  /persons/{personId}/dateAdded:
+    put:
+      tags:
+        - "persons"
+        - "update"
+      summary: "Update Date Added data"
+      operationId: "update-date-added"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "The unique Person identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Date Added updated successfully"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find person by id"
+  /persons/{personId}/dateContacted:
+    put:
+      tags:
+        - "persons"
+        - "update"
+      summary: "Update Date Contacted data"
+      operationId: "update-date-contacted"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "The unique Person identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Date Contacted updated successfully"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Person by id"
+  /persons/{personId}/personReplied:
+    put:
+      tags:
+        - "persons"
+        - "update"
+      summary: "Update Person Replied data"
+      operationId: "udpate-person-replied"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "The unique Person identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Date Contacted updated successfully"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Person by id"
+  # Organization Endpoints
+  /organizations:
+    summary: "Endpoint for operations related to Organizations"
+    post:
+      tags:
+        - "organizations"
+        - "create"
+      summary: "Create Organization"
+      operationId: "create-organization"
+      parameters:
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Organization"
+      responses:
+        "201":
+          description: "Created Organization successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+  /organizations/{organizationId}:
+    get:
+      tags:
+        - "organizations"
+        - "read"
+      summary: "Get Organization data by id"
+      operationId: "get-organization"
+      parameters:
+        - name: "organizationId"
+          in: "path"
+          description: "The unique Organization identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Organization data successfully retrieved"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+    put:
+      tags:
+        - "organizations"
+        - "update"
+      summary: "Update Organization data"
+      operationId: "update-organization"
+      parameters:
+        - name: "organizationId"
+          in: "path"
+          description: "The unique Organization identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Organization data updated successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Organization by id"
+    delete:
+      tags:
+        - "organizations"
+        - "delete"
+      summary: "Delete Organization"
+      description: "This can only be done by the User Account(s) who holds the correct permissions"
+      operationId: "delete-organization"
+      parameters:
+        - name: "organizationId"
+          in: "path"
+          description: "The unique Organization identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "204":
+          description: "Organization deleted"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Organization by id"
+  /organizations/{organizationId}/location:
+    post:
+      tags:
+        - "organizations"
+        - "locations"
+        - "create"
+      summary: "Add Organization Location"
+      operationId: "add-organization-location"
+      parameters:
+        - name: "organizationId"
+          in: "path"
+          description: "The unique Organization identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "201":
+          description: "Location added successfully to Organization"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Organization by id"
+  /organizations/location/{locationId}:
+    get:
+      tags:
+        - "organizations"
+        - "locations"
+        - "read"
+      summary: "Get a list of Organizations based on Location"
+      operationId: "get-organizations-by-location"
+      parameters:
+        - name: "locationId"
+          in: "path"
+          description: "The unique Location identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Organizations data successfully retrieved"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Organization"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "No Organizations found for this location"
+  /organizations/{organizationId}/position:
+    post:
+      tags:
+        - "organizations"
+        - "positions"
+        - "create"
+      summary: "Add Organization Position"
+      operationId: "add-organization-position"
+      parameters:
+        - name: "organizationId"
+          in: "path"
+          description: "The unique Organization identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "201":
+          description: "Position added successfully to Organization"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Organization by id"
+  /organizations/position/{positionId}:
+    get:
+      tags:
+        - "organizations"
+        - "positions"
+        - "read"
+      summary: "Get a list of Organizations based on Position"
+      operationId: "get-organizations-by-position"
+      parameters:
+        - name: "positionId"
+          in: "path"
+          description: "The unique Position identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Organizations data successfully retrieved"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Organization"
+  /organizations/{organizationId}/rating:
+    put:
+      tags:
+        - "organizations"
+        - "update"
+      summary: "Update Organization rating"
+      operationId: "update-organization-rating"
+      parameters:
+        - name: "organizationId"
+          in: "path"
+          description: "The unique Organization identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Rating updated successfully"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Organization by id"
+  # Application Endpoints
+  /applications:
+    summary: "Endpoint for operations related to Applications"
+    post:
+      tags:
+        - "applications"
+        - "create"
+      summary: "Create Application"
+      operationId: "create-application"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Application"
+      responses:
+        "201":
+          description: "Created"
+          content:
+            applications/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+  /applications/{applicationId}:
+    put:
+      tags:
+        - "applications"
+        - "update"
+      summary: "Update Application data"
+      operationId: "update-application"
+      parameters:
+        - name: "applicationId"
+          in: "path"
+          description: "The unique Application identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Application"
+      responses:
+        "200":
+          description: "Updated Application"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Application by id"
+    get:
+      tags:
+        - "applications"
+        - "read"
+      summary: "Get Application by id"
+      operationId: "get-application"
+      parameters:
+        - name: "applicationId"
+          in: "path"
+          description: "The unique Application identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Application retrieved successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Application"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Application by id"
+    delete:
+      tags:
+        - "applications"
+        - "delete"
+      summary: "Delete Application"
+      operationId: "delete-application"
+      parameters:
+        - name: "applicationId"
+          in: "path"
+          description: "The unique Application identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "204":
+          description: "Application deleted successfully"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Application by id"
+  /applications/{applicationId}/status:
+    put:
+      tags:
+        - "applications"
+        - "update"
+      summary: "Update Application status"
+      operationId: "update-application-status"
+      parameters:
+        - name: "applicationId"
+          in: "path"
+          description: "The unique Application identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                status:
+                  type: "integer"
+                  minimum: 0
+                  maximum: 8
+      responses:
+        "200":
+          description: "Application status updated"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Application by id"
+  /applications/organizations/{organizationId}:
+    get:
+      tags:
+        - "applications"
+        - "organizations"
+        - "read"
+      summary: "Get list of Applications by Organization"
+      operationId: "get-applications-by-organization"
+      parameters:
+        - name: "organizationId"
+          in: "path"
+          description: "The unique Organization identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Applications retrieved successfully"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Application by id"
+  /applications/positions/{positionId}:
+    get:
+      tags:
+        - "applications"
+        - "positions"
+        - "read"
+      summary: "Get list of Applications by Position"
+      operationId: "get-applications-by-position"
+      parameters:
+        - name: "positionId"
+          in: "path"
+          description: "The unique Position identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Applications retrieved successfully"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Application by id"
+  /applications/statuses/{status}:
+    get:
+      tags:
+        - "applications"
+        - "read"
+      summary: "Get list of Applications by Organization"
+      operationId: "get-applications-by-status"
+      parameters:
+        - name: "status"
+          in: "path"
+          description: "The Application Status"
+          required: true
+          schema:
+            type: "integer"
+            minimum: 0
+            maximum: 8
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Applications retrieved successfully"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Application by id"
+  # # Location Endpoints
+  /locations:
+    post:
+      tags:
+        - "locations"
+        - "create"
+      summary: "Create Location"
+      operationId: "create-location"
+      parameters:
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Location"
+      responses:
+        "201":
+          description: "Created"
+          content:
+            applications/json:
+              schema:
+                $ref: "#/components/schemas/Location"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+  /locations/{locationId}:
+    put:
+      tags:
+        - "locations"
+        - "create"
+      summary: "Update Location"
+      operationId: "update-location"
+      parameters:
+        - name: "locationId"
+          in: "path"
+          description: "The unique Location identifier"
+          required: true
+          schema:
+            type: "integer"
+            minimum: 0
+            maximum: 8
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Location"
+      responses:
+        "200":
+          description: "Updated Location"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Location by id"
+
+  # # Position Endpoints
+  # /positions:
+  # /positions/{positionId}:
+  # # File Endpoints
+  # /files:
+  # /files/{fileId}:
+# components:
+# security:
+tags:
+  - name: "create"
+    description: "Create operations in the CRUD paradigm"
+  - name: "read"
+    description: "Read operations in the CRUD paradigm"
+  - name: "update"
+    description: "Update operations in the CRUD paradigm"
+  - name: "delete"
+    description: "Delete operations in the CRUD paradigm"
+  - name: "accounts"
+    description: "Anything related to User Accounts"
+  - name: "applications"
+    description: "Anything related to Applications"
+  - name: "auth"
+    description: "Anything related to Auth"
+  - name: "files"
+    description: "Anything related to Files"
+  - name: "locations"
+    description: "Anything related to Locations"
+  - name: "networks"
+    description: "Anything related to Networks"
+  - name: "organizations"
+    description: "Anything related to Organizations"
+  - name: "persons"
+    description: "Anything related to Persons"
+  - name: "positions"
+    description: "Anything related to Positions"
+externalDocs:
+  url: "https://github.com/codyuhi/net-app"
+# Definitions for schemas created for the project
+components:
+  schemas:
+    Account:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        username:
+          type: "string"
+        password:
+          type: "string"
+        personId:
+          type: "string"
+          format: "uuid"
+    Application:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        organizationId:
+          type: "string"
+          format: "uuid"
+        positionId:
+          type: "string"
+          format: "uuid"
+        files:
+          type: "array"
+          items:
+            type: "string"
+        status:
+          type: "integer"
+          minimum: 0
+          maximum: 8
+        dateSubmitted:
+          type: "string"
+          format: "date-time"
+        description:
+          type: "string"
+        notes:
+          type: "string"
+    AuthToken:
+      type: "object"
+      properties:
+        token:
+          type: "string"
+    Location:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        name:
+          type: "string"
+        description:
+          type: "string"
+    Login:
+      type: "object"
+      properties:
+        username:
+          type: "string"
+        password:
+          type: "string"
+    Network:
+      type: "object"
+      properties:
+        persons:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Person"
+    Organization:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        name:
+          type: "string"
+        locations:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Location"
+        positions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Position"
+        rating:
+          type: "integer"
+          minimum: 0
+          maximum: 10
+        description:
+          type: "string"
+    Person:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        rootPerson:
+          type: "boolean"
+        firstName:
+          type: "string"
+        lastName:
+          type: "string"
+        organizationId:
+          type: "string"
+          format: "uuid"
+        positionId:
+          type: "string"
+          format: "uuid"
+        network:
+          type: "array"
+          items:
+            type: "string"
+            format: "uuid"
+        dateRequested:
+          type: "string"
+          format: "date-time"
+        dateContacted:
+          type: "string"
+          format: "date-time"
+        replied:
+          type: "boolean"
+        description:
+          type: "string"
+    Position:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        name:
+          type: "string"
+        description:
+          type: "string"
