@@ -39,7 +39,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Account"
         "400":
-          description: "Invalid Account input"
+          description: "Invalid request"
   /accounts/{accountId}:
     summary: "Endpoint for operations related to a single, identified User Account"
     get:
@@ -64,7 +64,7 @@ paths:
           required: true
       responses:
         "200":
-          description: "User Account data successfully retrieved"
+          description: "Success"
           content:
             application/json:
               schema:
@@ -74,7 +74,12 @@ paths:
         "403":
           description: "Insufficent permissions"
         "404":
-          description: "Unable to find user by id"
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - read-own
+        - AdminAuth:
+          - read-all
     put:
       tags:
         - "accounts"
@@ -103,13 +108,18 @@ paths:
               $ref: "#/components/schemas/Account"
       responses:
         "200":
-          description: "Updated"
+          description: "Success"
         "400":
-          description: "Invalid data provided"
+          description: "Invalid request"
         "403":
-          description: "Insufficient permissions to update User Account"
+          description: "Insufficient permissions"
         "404":
-          description: "Unable to find user"
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
     delete:
       tags:
         - "accounts"
@@ -132,11 +142,18 @@ paths:
           required: true
       responses:
         "204":
-          description: "User Account deleted"
+          description: "Deleted"
+        "400":
+          description: "Invalid request"
         "403":
-          description: "Insufficient permissions to delete User Account"
+          description: "Insufficient permissions"
         "404":
-          description: "Unable to find User Account by id"
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
   /accounts/login:
     summary: "Endpoint for the login operation"
     post:
@@ -162,6 +179,11 @@ paths:
           description: "Invalid login data format provided"
         "403":
           description: "Invalid username/password combination"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
   /accounts/logout:
     summary: "Endpoint for the logout operation"
     delete:
@@ -182,6 +204,11 @@ paths:
           description: "Logged out successfully"
         "400":
           description: "Invalid request"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
   # Person Endpoints
   /persons:
     summary: "Endpoint for operations related to Persons"
@@ -206,15 +233,20 @@ paths:
               $ref: "#/components/schemas/Person"
       responses:
         "201":
-          description: "Created Person successfully"
+          description: "Created"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Person"
         "400":
-          description: "Invalid Person input"
+          description: "Invalid request"
         "403":
           description: "Insufficient permissions"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
     get:
       tags:
         - "persons"
@@ -231,15 +263,22 @@ paths:
           required: true
       responses:
         "200":
-          description: "All Persons in the User's network retrieved successfully"
+          description: "Success"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Network"
         "400":
           description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
         "404":
           description: "No Persons found for the authenticated User Account's network"
+      security:
+        - ApiKeyAuth:
+          - read-own
+        - AdminAuth:
+          - read-all
   /persons/{personId}:
     get:
       tags:
@@ -254,15 +293,30 @@ paths:
           required: true
           schema:
             type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
       responses:
         "200":
-          description: "Person data successfully retrieved"
+          description: "Success"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Person"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
         "404":
-          description: "Unable to find Person by id"
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - read-own
+        - AdminAuth:
+          - read-all
     put:
       tags:
         - "persons"
@@ -282,9 +336,15 @@ paths:
           schema:
             type: "string"
           required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Person"
       responses:
         "200":
-          description: "Person data updated successfully"
+          description: "Success"
           content:
             application/json:
               schema:
@@ -295,6 +355,11 @@ paths:
           description: "Insufficient permissions"
         "404":
           description: "Unable to find Person by id"
+      security:
+        - ApiKeyAuth:
+          - read-own
+        - AdminAuth:
+          - read-all
     delete:
       tags:
         - "persons"
@@ -317,11 +382,18 @@ paths:
           required: true
       responses:
         "204":
-          description: "Person deleted"
+          description: "Deleted"
+        "400":
+          description: "Invalid request"
         "403":
           description: "Insufficient permissions to delete Person"
         "404":
-          description: "Unable to find Person by id"
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
   /persons/{personId}/network:
     summary: "Endpoint for operations related to Person networks"
     post:
@@ -360,6 +432,13 @@ paths:
           description: "Invalid request"
         "403":
           description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
     get:
       tags:
         - "persons"
@@ -382,15 +461,22 @@ paths:
           required: true
       responses:
         "200":
-          description: "Persons data successfully retrieved"
+          description: "Success"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Network"
         "400":
           description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
         "404":
           description: "No Persons found for the authenticated User Account's network"
+      security:
+        - ApiKeyAuth:
+          - read-own
+        - AdminAuth:
+          - read-all
   /persons/{personId}/network/{person2Id}:
     summary: "Endpoint for operations related to the Network connection between two Persons"
     delete:
@@ -446,15 +532,26 @@ paths:
           schema:
             type: "string"
           required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DateTime"
       responses:
         "200":
-          description: "Date Requested updated successfully"
+          description: "Success"
         "400":
           description: "Invalid request"
         "403":
           description: "Insufficient permissions"
         "404":
-          description: "Unable to find Person by id"
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
   /persons/{personId}/dateAdded:
     put:
       tags:
@@ -475,15 +572,26 @@ paths:
           schema:
             type: "string"
           required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DateTime"
       responses:
         "200":
-          description: "Date Added updated successfully"
+          description: "Success"
         "400":
           description: "Invalid request"
         "403":
           description: "Insufficient permissions"
         "404":
           description: "Unable to find person by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
   /persons/{personId}/dateContacted:
     put:
       tags:
@@ -504,15 +612,26 @@ paths:
           schema:
             type: "string"
           required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DateTime"
       responses:
         "200":
-          description: "Date Contacted updated successfully"
+          description: "Success"
         "400":
           description: "Invalid request"
         "403":
           description: "Insufficient permissions"
         "404":
           description: "Unable to find Person by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
   /persons/{personId}/personReplied:
     put:
       tags:
@@ -533,15 +652,28 @@ paths:
           schema:
             type: "string"
           required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                replied:
+                  type: "boolean"
       responses:
         "200":
-          description: "Date Contacted updated successfully"
+          description: "Success"
         "400":
           description: "Invalid request"
         "403":
           description: "Insufficient permissions"
         "404":
-          description: "Unable to find Person by id"
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
   # Organization Endpoints
   /organizations:
     summary: "Endpoint for operations related to Organizations"
@@ -566,7 +698,7 @@ paths:
               $ref: "#/components/schemas/Organization"
       responses:
         "201":
-          description: "Created Organization successfully"
+          description: "Created"
           content:
             application/json:
               schema:
@@ -575,6 +707,11 @@ paths:
           description: "Invalid request"
         "403":
           description: "Insufficient permissions"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
   /organizations/{organizationId}:
     get:
       tags:
@@ -597,11 +734,20 @@ paths:
           required: true
       responses:
         "200":
-          description: "Organization data successfully retrieved"
+          description: "Success"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Organization"
+        "400":
+          description: "Invalid request"
+        "404":
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - read-all
+        - AdminAuth:
+          - read-all
     put:
       tags:
         - "organizations"
@@ -621,9 +767,15 @@ paths:
           schema:
             type: "string"
           required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Account"
       responses:
         "200":
-          description: "Organization data updated successfully"
+          description: "Success"
           content:
             application/json:
               schema:
@@ -633,7 +785,12 @@ paths:
         "403":
           description: "Insufficient permissions"
         "404":
-          description: "Unable to find Organization by id"
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
     delete:
       tags:
         - "organizations"
@@ -656,13 +813,18 @@ paths:
           required: true
       responses:
         "204":
-          description: "Organization deleted"
+          description: "Deleted"
         "400":
           description: "Invalid request"
         "403":
           description: "Insufficient permissions"
         "404":
           description: "Unable to find Organization by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
   /organizations/{organizationId}/location:
     post:
       tags:
@@ -684,6 +846,12 @@ paths:
           schema:
             type: "string"
           required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Location"
       responses:
         "201":
           description: "Location added successfully to Organization"
@@ -692,7 +860,12 @@ paths:
         "403":
           description: "Insufficient permissions"
         "404":
-          description: "Unable to find Organization by id"
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
   /organizations/location/{locationId}:
     get:
       tags:
@@ -716,7 +889,7 @@ paths:
           required: true
       responses:
         "200":
-          description: "Organizations data successfully retrieved"
+          description: "Success"
           content:
             application/json:
               schema:
@@ -729,6 +902,11 @@ paths:
           description: "Insufficient permissions"
         "404":
           description: "No Organizations found for this location"
+      security:
+        - ApiKeyAuth:
+          - read-own
+        - AdminAuth:
+          - read-all
   /organizations/{organizationId}/position:
     post:
       tags:
@@ -750,6 +928,12 @@ paths:
           schema:
             type: "string"
           required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Position"
       responses:
         "201":
           description: "Position added successfully to Organization"
@@ -759,6 +943,11 @@ paths:
           description: "Insufficient permissions"
         "404":
           description: "Unable to find Organization by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
   /organizations/position/{positionId}:
     get:
       tags:
@@ -782,13 +971,24 @@ paths:
           required: true
       responses:
         "200":
-          description: "Organizations data successfully retrieved"
+          description: "Success"
           content:
             application/json:
               schema:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/Organization"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - read-all
+        - AdminAuth:
+          - read-all
   /organizations/{organizationId}/rating:
     put:
       tags:
@@ -809,15 +1009,30 @@ paths:
           schema:
             type: "string"
           required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                rating:
+                  type: "integer"
+                  minimum: 0
+                  maximum: 10
       responses:
         "200":
-          description: "Rating updated successfully"
+          description: "Success"
         "400":
           description: "Invalid request"
         "403":
           description: "Insufficient permissions"
         "404":
-          description: "Unable to find Organization by id"
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
   # Application Endpoints
   /applications:
     summary: "Endpoint for operations related to Applications"
@@ -844,6 +1059,11 @@ paths:
           description: "Invalid request"
         "403":
           description: "Insufficient permissions"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
   /applications/{applicationId}:
     put:
       tags:
@@ -872,13 +1092,18 @@ paths:
               $ref: "#/components/schemas/Application"
       responses:
         "200":
-          description: "Updated Application"
+          description: "Success"
         "400":
           description: "Invalid request"
         "403":
           description: "Insufficient permissions"
         "404":
-          description: "Unable to find Application by id"
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
     get:
       tags:
         - "applications"
@@ -900,7 +1125,7 @@ paths:
           required: true
       responses:
         "200":
-          description: "Application retrieved successfully"
+          description: "Success"
           content:
             application/json:
               schema:
@@ -911,6 +1136,11 @@ paths:
           description: "Insufficient permissions"
         "404":
           description: "Unable to find Application by id"
+      security:
+        - ApiKeyAuth:
+          - read-own
+        - AdminAuth:
+          - read-all
     delete:
       tags:
         - "applications"
@@ -932,13 +1162,18 @@ paths:
           required: true
       responses:
         "204":
-          description: "Application deleted successfully"
+          description: "Deleted"
         "400":
           description: "Invalid request"
         "403":
           description: "Insufficient permissions"
         "404":
-          description: "Unable to find Application by id"
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
   /applications/{applicationId}/status:
     put:
       tags:
@@ -972,13 +1207,18 @@ paths:
                   maximum: 8
       responses:
         "200":
-          description: "Application status updated"
+          description: "Success"
         "400":
           description: "Invalid request"
         "403":
           description: "Insufficient permissions"
         "404":
-          description: "Unable to find Application by id"
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
   /applications/organizations/{organizationId}:
     get:
       tags:
@@ -1002,13 +1242,24 @@ paths:
           required: true
       responses:
         "200":
-          description: "Applications retrieved successfully"
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Organization"
         "400":
           description: "Invalid request"
         "403":
           description: "Insufficient permissions"
         "404":
-          description: "Unable to find Application by id"
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - read-own
+        - AdminAuth:
+          - read-all
   /applications/positions/{positionId}:
     get:
       tags:
@@ -1032,13 +1283,24 @@ paths:
           required: true
       responses:
         "200":
-          description: "Applications retrieved successfully"
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Application"
         "400":
           description: "Invalid request"
         "403":
           description: "Insufficient permissions"
         "404":
-          description: "Unable to find Application by id"
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - read-own
+        - AdminAuth:
+          - read-all
   /applications/statuses/{status}:
     get:
       tags:
@@ -1063,13 +1325,24 @@ paths:
           required: true
       responses:
         "200":
-          description: "Applications retrieved successfully"
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Application"
         "400":
           description: "Invalid request"
         "403":
           description: "Insufficient permissions"
         "404":
-          description: "Unable to find Application by id"
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - read-own
+        - AdminAuth:
+          - read-all
   # # Location Endpoints
   /locations:
     post:
@@ -1102,11 +1375,55 @@ paths:
           description: "Invalid request"
         "403":
           description: "Insufficient permissions"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
   /locations/{locationId}:
+    get:
+      tags:
+        - "locations"
+        - "read"
+      summary: "Get Location by id"
+      operationId: "get-location"
+      parameters:
+        - name: "locationId"
+          in: "path"
+          description: "The unique Location identifier"
+          required: true
+          schema:
+            type: "integer"
+            minimum: 0
+            maximum: 8
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Location"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - read-own
+        - AdminAuth:
+          - read-all
     put:
       tags:
         - "locations"
-        - "create"
+        - "update"
       summary: "Update Location"
       operationId: "update-location"
       parameters:
@@ -1132,22 +1449,304 @@ paths:
               $ref: "#/components/schemas/Location"
       responses:
         "200":
-          description: "Updated Location"
+          description: "Success"
         "400":
           description: "Invalid request"
         "403":
           description: "Insufficient permissions"
         "404":
-          description: "Unable to find Location by id"
-
-  # # Position Endpoints
-  # /positions:
-  # /positions/{positionId}:
-  # # File Endpoints
-  # /files:
-  # /files/{fileId}:
-# components:
-# security:
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
+    delete:
+      tags:
+        - "locations"
+        - "delete"
+      summary: "Delete Location"
+      operationId: "delete-location"
+      parameters:
+        - name: "locationId"
+          in: "path"
+          description: "The unique Location identifier"
+          required: true
+          schema:
+            type: "integer"
+            minimum: 0
+            maximum: 8
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "204":
+          description: "Deleted"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
+  # Position Endpoints
+  /positions:
+    summary: "Endpoint for operations related to Applications"
+    post:
+      tags:
+        - "positions"
+        - "create"
+      summary: "Create Position"
+      operationId: "create-position"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Position"
+      responses:
+        "201":
+          description: "Created"
+          content:
+            applications/json:
+              schema:
+                $ref: "#/components/schemas/Position"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
+  /positions/{positionId}:
+    put:
+      tags:
+        - "positions"
+        - "update"
+      summary: "Update Position data"
+      operationId: "update-position"
+      parameters:
+        - name: "positionId"
+          in: "path"
+          description: "The unique Position identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Position"
+      responses:
+        "200":
+          description: "Success"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
+    get:
+      tags:
+        - "positions"
+        - "read"
+      summary: "Get Position by id"
+      operationId: "get-position"
+      parameters:
+        - name: "positionId"
+          in: "path"
+          description: "The unique Position identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Position"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - read-own
+        - AdminAuth:
+          - read-all
+    delete:
+      tags:
+        - "positions"
+        - "delete"
+      summary: "Delete Position"
+      operationId: "delete-position"
+      parameters:
+        - name: "positionId"
+          in: "path"
+          description: "The unique Position identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "204":
+          description: "Deleted"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
+  # File Endpoints
+  /files:
+    summary: "Endpoint for operations related to Files"
+    post:
+      tags:
+        - "files"
+        - "create"
+      summary: "Upload File"
+      operationId: "upload-file"
+      requestBody:
+        required: true
+        content:
+          applications/json:
+            schema:
+              $ref: "#/components/schemas/File"
+      responses:
+        "201":
+          description: "Created"
+          content:
+            applications/json:
+              schema:
+                $ref: "#/components/schemas/File"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
+  /files/{fileId}:
+    get:
+      tags:
+        - "files"
+        - "read"
+      summary: "Download File"
+      operationId: "download-file"
+      parameters:
+        - name: "fileId"
+          in: "path"
+          description: "The unique Position identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "File retrieved successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/File"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find File by id"
+      security:
+        - ApiKeyAuth:
+          - read-own
+        - AdminAuth:
+          - read-all
+    delete:
+      tags:
+        - "files"
+        - "delete"
+      summary: "Delete File"
+      operationId: "delete-file"
+      parameters:
+        - name: "fileId"
+          in: "path"
+          description: "The unique File identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authToken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "204":
+          description: "Position deleted successfully"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Position by id"
+      security:
+        - ApiKeyAuth:
+          - write-own
+        - AdminAuth:
+          - write-all
+security:
+  - ApiKeyAuth:
+    - read-own
+    - write-own
+    - read-all
+  - AdminAuth:
+    - read-all
+    - write-all
 tags:
   - name: "create"
     description: "Create operations in the CRUD paradigm"
@@ -1179,6 +1778,15 @@ externalDocs:
   url: "https://github.com/codyuhi/net-app"
 # Definitions for schemas created for the project
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+    AdminAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
   schemas:
     Account:
       type: "object"
@@ -1225,6 +1833,23 @@ components:
       properties:
         token:
           type: "string"
+    DateTime:
+      type: "object"
+      properties:
+        data:
+          type: "string"
+          format: "datetime"
+    File:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+          format: "uuid"
+        name:
+          type: "string"
+        payload:
+          type: "string"
+          format: "binary"
     Location:
       type: "object"
       properties:
