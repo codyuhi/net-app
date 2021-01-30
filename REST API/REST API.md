@@ -77,8 +77,8 @@ ____
 | add new organization position | `/organizations/{organization_id}/positions` | POST | `organization_id` |
 | set organization rating data | `/organizations/{organization_id}/ratings` | PUT | `organization_id` |
 | get organization info | `/organizations/{organization_id}` | GET | `organization_id` |
-| get list of organizations based on location | `/organizations/{organization_id}/locations` | GET | `organization_id` |
-| get list of organizations based on position | `/organizations/{organization_id}/positions` | GET | `organization_id` |
+| get list of organizations based on location | `/organizations/locations/{location_id}` | GET | `location_id` |
+| get list of organizations based on position | `/organizations/positions/{position_id}` | GET | `position_id` |
 | create application | `/applications` | POST |  |
 | edit application | `/applications/{application_id}` | PUT | `application_id` |
 | delete application | `/applications/{application_id}` | DELETE | `application_id` |
