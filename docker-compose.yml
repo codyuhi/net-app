@@ -1,0 +1,68 @@
+version: '3.1'
+
+services:
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  db:
+    build:
+      context: ./docker/db
+    restart: always
+    env_file: ./.env
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    ports:
+      - ${DB_PORT}:5432
+    
+  web:
+    build:
+      context: .
+    ports:
+      - 8000:3000
+    volumes:
+      - ./api:/root/api
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+    environment:
+      SEQ_DB: ${DB_NAME}
+      SEQ_USER: ${DB_USER}
+      SEQ_PW: ${DB_PASS}
+      DATABASE_URL: postgres://${DB_USER}:${DB_PASS}@db:5432/${DB_NAME}
+
+  # All of the below config is for a mongo connection
+  # # mongo database instance
+  # mongo:
+  #   image: mongo:4
+  #   restart: always
+  #   env_file:
+  #     - ./.env
+
+  # # web server
+  # web:
+  #   # build an image using the Dockerfile in the current directory
+  #   build:
+  #     context: .
+
+  #   # map external port 8000 to internal port 3000
+  #   ports:
+  #     - 8000:3000
+
+  #   # creating a volume mount is nice for development
+  #   volumes:
+  #     - ./api:/root/api
+
+  #   # give the location for the environment file
+  #   env_file:
+  #     - ./.env
+
+  #   # tell this container not to start until the mongo container starts
+  #   depends_on:
+  #     - mongo
