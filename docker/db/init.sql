@@ -13,6 +13,19 @@ CREATE TABLE "users" (
 CREATE INDEX "users_username" ON "users" ("username");
 
 --------------------
+-- Auth Tokens
+--------------------
+
+CREATE TABLE "auth" (
+    "token" character varying(40) NOT NULL,
+    "userid" character varying(40) NOT NULL,
+    "timestamp" timestamp default current_timestamp,
+    PRIMARY KEY ("token")
+);
+
+CREATE INDEX "auth_token" ON "auth" ("token");
+
+--------------------
 -- netapp database
 --------------------
 

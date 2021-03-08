@@ -166,56 +166,64 @@ paths:
       #     - write-own
       #   - AdminAuth:
       #     - write-all
-#   /accounts/login:
-#     summary: "Endpoint for the login operation"
-#     post:
-#       tags:
-#         - "auth"
-#         - "create"
-#       summary: "Login as user"
-#       operationId: "login"
-#       requestBody:
-#         required: true
-#         content:
-#           application/json:
-#             schema:
-#               $ref: "#/components/schemas/Login"
-#       responses:
-#         "201":
-#           description: "Authentication successful"
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: "#/components/schemas/authtoken"
-#         "400":
-#           description: "Invalid login data format provided"
-#         "403":
-#           description: "Invalid username/password combination"
+  /accounts/login:
+    summary: "Endpoint for the login operation"
+    post:
+      tags:
+        - "auth"
+        - "create"
+      x-controller: users
+      x-operation: login
+      summary: "Login as user"
+      operationId: "login"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Login"
+      responses:
+        "201":
+          description: "Authentication successful"
+          headers:
+            location:
+              schema:
+                type: "string"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/authtoken"
+        "400":
+          description: "Invalid login data format provided"
+        "403":
+          description: "Invalid username/password combination"
 #       security:
 #         - ApiKeyAuth:
 #           - write-own
 #         - AdminAuth:
 #           - write-all
-#   /accounts/logout:
-#     summary: "Endpoint for the logout operation"
-#     delete:
-#       tags:
-#         - "auth"
-#         - "delete"
-#       parameters:
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       summary: "Logout the authenticated user"
-#       operationId: "logout"
-#       responses:
-#         "204":
-#           description: "Logged out successfully"
-#         "400":
-#           description: "Invalid request"
+  /accounts/logout:
+    summary: "Endpoint for the logout operation"
+    delete:
+      tags:
+        - "auth"
+        - "delete"
+      x-controller: users
+      x-operation: logout
+      parameters:
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      summary: "Logout the authenticated user"
+      operationId: "logout"
+      responses:
+        "204":
+          description: "Logged out successfully"
+        "400":
+          description: "Invalid request"
 #       security:
 #         - ApiKeyAuth:
 #           - write-own
