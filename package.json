@@ -6,11 +6,13 @@
     "dev": "nuxt-ts",
     "build": "nuxt-ts build",
     "start": "nuxt-ts start",
+    "fly": "nuxt-ts build && nuxt-ts start",
     "generate": "nuxt-ts generate",
     "test": "jest",
     "go": "npx ts-node --files --project api/tsconfig.json api/index.ts"
   },
   "dependencies": {
+    "@babel/preset-env": "^7.12.17",
     "@nuxt/typescript-runtime": "^2.0.1",
     "@nuxtjs/axios": "^5.12.5",
     "bcrypt": "^5.0.1",

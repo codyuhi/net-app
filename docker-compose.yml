@@ -25,6 +25,8 @@ services:
       context: .
     ports:
       - 8000:3000
+    expose:
+      - 3000
     volumes:
       - ./api:/root/api
     env_file:

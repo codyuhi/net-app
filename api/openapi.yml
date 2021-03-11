@@ -17,7 +17,7 @@ servers:
     description: "The development server for the NetApp, hosted in a Digital Ocean cloud server.  Asset located in San Francisco, CA."
 paths:
   # User Account Endpoints
-  /accounts:
+  /api/accounts:
     summary: "Endpoint for operations related to User Accounts"
     post:
       tags:
@@ -46,7 +46,7 @@ paths:
                 $ref: "#/components/schemas/Account"
         "400":
           description: "Invalid request"
-  /accounts/{accountid}:
+  /api/accounts/{accountid}:
     summary: "Endpoint for operations related to a single, identified User Account"
     get:
       tags:
@@ -166,7 +166,7 @@ paths:
       #     - write-own
       #   - AdminAuth:
       #     - write-all
-  /accounts/login:
+  /api/accounts/login:
     summary: "Endpoint for the login operation"
     post:
       tags:
@@ -202,7 +202,7 @@ paths:
 #           - write-own
 #         - AdminAuth:
 #           - write-all
-  /accounts/logout:
+  /api/accounts/logout:
     summary: "Endpoint for the logout operation"
     delete:
       tags:
