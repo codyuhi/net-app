@@ -20,19 +20,19 @@ services:
     ports:
       - ${DB_PORT}:5432
     
-  web:
-    build:
-      context: .
-    ports:
-      - 8000:3000
-    expose:
-      - 3000
-    volumes:
-      - ./api:/root/api
-    env_file:
-      - ./.env
-    depends_on:
-      - db
+  # web:
+  #   build:
+  #     context: .
+  #   ports:
+  #     - 8000:3000
+  #   expose:
+  #     - 3000
+  #   volumes:
+  #     - ./api:/root/api
+  #   env_file:
+  #     - ./.env
+  #   depends_on:
+  #     - db
 
   # All of the below config is for a mongo connection
   # # mongo database instance

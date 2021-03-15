@@ -1,75 +1,42 @@
 <template>
   <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">
-        NetApp
-      </h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
+    <navbar></navbar>
+    <div v-if="loggedIn">
+        <p>LOGGED IN</p>
+    </div>
+    <div v-else>
+        <p>LOGGED OUT</p>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from "vue";
+import navbar from "~/components/navbar.vue";
 
-export default Vue.extend({})
+export default Vue.extend({
+  components: { navbar },
+  methods: {
+    login() {},
+  },
+  computed: {
+    loggedIn: () => {
+      return localStorage.token;
+    },
+  },
+});
 </script>
 
 <style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+:root {
+  --primary-color: #284b63;
+  --secondary-color: #3c6e71;
+  --light-color: #ffffff;
+  --dark-color: #353535;
+  --accent-color: #d9d9d9;
 }
 
-.title {
-  font-family:
-    'Quicksand',
-    'Source Sans Pro',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
+.navbar {
+  background-color: var(--primary-color) !important;
 }
 </style>
