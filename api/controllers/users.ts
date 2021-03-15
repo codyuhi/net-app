@@ -64,6 +64,7 @@ export default function (pool: PoolClient) {
     },
     async updateAccount(req: express.Request, res: express.Response) {
       if (!req.header('authtoken')) {
+        console.log('got here')
         res.status(403)
         res.send({
           success: false,
@@ -143,7 +144,8 @@ export default function (pool: PoolClient) {
           res.status(201)
           res.send({
             success: true,
-            token: dbResponse.authtoken
+            token: dbResponse.authtoken,
+            id: dbResponse.userid
           })
         })
         .catch((err) => {

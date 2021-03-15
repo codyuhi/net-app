@@ -2,8 +2,8 @@
   <div class="container">
     <navbar></navbar>
     <div class="flex-column content-container">
-      <h1>The Persons page will be built later</h1>
-      <nuxt-link key="persons" to="/">Return to main page</nuxt-link>
+      <h1>The Companies page will be built later</h1>
+      <nuxt-link key="companies" to="/">Return to main page</nuxt-link>
     </div>
   </div>
 </template>

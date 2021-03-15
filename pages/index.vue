@@ -1,11 +1,58 @@
 <template>
   <div class="container">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
     <navbar></navbar>
     <div v-if="loggedIn">
-        <p>LOGGED IN</p>
+      <div class="flex-row content-container">
+        <intro></intro>
+        <home-options
+          v-for="view in views"
+          :key="view"
+          :name="view.name"
+          :link="view.link"
+        ></home-options>
+      </div>
     </div>
-    <div v-else>
-        <p>LOGGED OUT</p>
+    <div v-else class="flex-column">
+      <div class="flex-column content-container">
+        <intro></intro>
+        <div v-if="loginSelected" class="flex-column">
+          <h2>Login</h2>
+          <br />
+          <form>
+            <p>
+              Username<br /><input v-model="username" type="text" placeholder="Enter Username" />
+            </p>
+            <p>Password<br /><input v-model="password" type="password" placeholder="Enter Password" /></p>
+            <input value="Login" type="button" @click="login()" />
+          </form>
+          <br />
+          <p>
+            Need an account?
+            <span @click="toggleLogin()">Create an account now</span>
+          </p>
+        </div>
+        <div v-else class="flex-column">
+          <h2>Create Account</h2>
+          <br />
+          <form>
+            <p>
+              Username<br /><input v-model="username" type="text" placeholder="Enter Username" />
+            </p>
+            <p>Password<br /><input v-model="password" type="password" placeholder="Enter Password" /></p>
+            <input value="Create Account" type="button" @click="createAccount()" />
+          </form>
+          <br />
+          <p>
+            Already have an account?
+            <span @click="toggleLogin()">Log in now</span>
+          </p>
+        </div>
+        <p class="error-text" v-if="error.exists">{{ error.text }}</p>
+      </div>
     </div>
   </div>
 </template>
@@ -13,11 +60,106 @@
 <script lang="ts">
 import Vue from "vue";
 import navbar from "~/components/navbar.vue";
+import homeOptions from "~/components/home-options.vue";
+import intro from "~/components/intro.vue";
 
 export default Vue.extend({
-  components: { navbar },
+  data() {
+    return {
+      username: "",
+      password: "",
+      views: [
+        {
+          name: "My Account",
+          link: "/accounts",
+        },
+        {
+          name: "My Person",
+          link: "/persons",
+        },
+        {
+          name: "My Network",
+          link: "/network",
+        },
+        {
+          name: "My Applications",
+          link: "/applications",
+        },
+        {
+          name: "Companies",
+          link: "/companies",
+        },
+        {
+          name: "Positions",
+          link: "/positions",
+        },
+      ],
+      error: {
+        exists: false,
+        text: "",
+      },
+      loginSelected: true,
+    };
+  },
+  components: { navbar, homeOptions },
   methods: {
-    login() {},
+    login() {
+      fetch("http://localhost:3000/api/accounts/login", {
+        method: "POST",
+        body: JSON.stringify({
+          username: this.username,
+          password: this.password,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((res) => {
+          if (!res.success) {
+            this.error.exists = true;
+            this.error.text = res.message;
+            return;
+          }
+          this.error.exists = false;
+          localStorage.token = JSON.stringify(res);
+          window.location.reload(true);
+        })
+        .catch((err) => {
+            this.error.exists = true;
+            this.error.text = err;
+        });
+    },
+    createAccount() {
+      fetch("http://localhost:3000/api/accounts", {
+        method: "POST",
+        body: JSON.stringify({
+          username: this.username,
+          password: this.password,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((res) => {
+          if (!res.success) {
+            this.error.exists = true;
+            this.error.text = res.message;
+            return;
+          }
+          this.error.exists = false;
+          localStorage.token = JSON.stringify(res);
+          window.location.reload(true);
+        });
+    },
+    toggleLogin() {
+      this.loginSelected = !this.loginSelected;
+    },
   },
   computed: {
     loggedIn: () => {
@@ -36,7 +178,46 @@ export default Vue.extend({
   --accent-color: #d9d9d9;
 }
 
-.navbar {
-  background-color: var(--primary-color) !important;
+.container {
+  width: inherit;
+  height: inherit;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: inherit;
+  height: inherit;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: inherit;
+  height: inherit;
+}
+
+.content-container {
+  height: inherit;
+  width: inherit;
+  margin-top: 50px;
+}
+
+.error-text {
+  margin: 15px;
+  color: red;
+}
+
+span {
+  color: var(--secondary-color);
+}
+
+span:hover {
+  cursor: pointer;
 }
 </style>

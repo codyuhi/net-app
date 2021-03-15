@@ -240,7 +240,8 @@ export default function (conn: PoolClient) {
             return {
               code: 201,
               success: true,
-              authtoken: res.rows[0].token
+              authtoken: res.rows[0].token,
+              userid: authenticateResponse.data.rows[0].id
             }
           })
           .catch((err) => {
@@ -248,7 +249,8 @@ export default function (conn: PoolClient) {
             return {
               code: 403,
               success: false,
-              authtoken: undefined
+              authtoken: undefined,
+              userid: undefined
             }
           })
         return createTokenResponse
@@ -256,7 +258,8 @@ export default function (conn: PoolClient) {
       return {
         code: 403,
         success: false,
-        authtoken: undefined
+        authtoken: undefined,
+        userid: undefined
       }
     },
     async logout(token: string) {
