@@ -10,7 +10,7 @@
         <intro></intro>
         <home-options
           v-for="view in views"
-          :key="view"
+          :key="view.name"
           :name="view.name"
           :link="view.link"
         ></home-options>
@@ -24,9 +24,19 @@
           <br />
           <form>
             <p>
-              Username<br /><input v-model="username" type="text" placeholder="Enter Username" />
+              Username<br /><input
+                v-model="username"
+                type="text"
+                placeholder="Enter Username"
+              />
             </p>
-            <p>Password<br /><input v-model="password" type="password" placeholder="Enter Password" /></p>
+            <p>
+              Password<br /><input
+                v-model="password"
+                type="password"
+                placeholder="Enter Password"
+              />
+            </p>
             <input value="Login" type="button" @click="login()" />
           </form>
           <br />
@@ -40,10 +50,24 @@
           <br />
           <form>
             <p>
-              Username<br /><input v-model="username" type="text" placeholder="Enter Username" />
+              Username<br /><input
+                v-model="username"
+                type="text"
+                placeholder="Enter Username"
+              />
             </p>
-            <p>Password<br /><input v-model="password" type="password" placeholder="Enter Password" /></p>
-            <input value="Create Account" type="button" @click="createAccount()" />
+            <p>
+              Password<br /><input
+                v-model="password"
+                type="password"
+                placeholder="Enter Password"
+              />
+            </p>
+            <input
+              value="Create Account"
+              type="button"
+              @click="createAccount()"
+            />
           </form>
           <br />
           <p>
@@ -62,6 +86,7 @@ import Vue from "vue";
 import navbar from "~/components/navbar.vue";
 import homeOptions from "~/components/home-options.vue";
 import intro from "~/components/intro.vue";
+import { mapActions } from "vuex";
 
 export default Vue.extend({
   data() {
@@ -103,63 +128,33 @@ export default Vue.extend({
   },
   components: { navbar, homeOptions },
   methods: {
-    login() {
-      fetch("http://localhost:3000/api/accounts/login", {
-        method: "POST",
-        body: JSON.stringify({
-          username: this.username,
-          password: this.password,
-        }),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-        },
-      })
-        .then((res) => {
-          return res.json();
-        })
-        .then((res) => {
-          if (!res.success) {
-            this.error.exists = true;
-            this.error.text = res.message;
-            return;
-          }
-          this.error.exists = false;
-          localStorage.token = JSON.stringify(res);
-          window.location.reload(true);
-        })
-        .catch((err) => {
-            this.error.exists = true;
-            this.error.text = err;
-        });
+    async login() {
+      const result = await this.vuexLogin({
+        username: this.username,
+        password: this.password,
+      });
+      if (result.errorExists) {
+        this.error.exists = true;
+        this.error.text = result.errorText;
+      }
     },
-    createAccount() {
-      fetch("http://localhost:3000/api/accounts", {
-        method: "POST",
-        body: JSON.stringify({
-          username: this.username,
-          password: this.password,
-        }),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-        },
-      })
-        .then((res) => {
-          return res.json();
-        })
-        .then((res) => {
-          if (!res.success) {
-            this.error.exists = true;
-            this.error.text = res.message;
-            return;
-          }
-          this.error.exists = false;
-          localStorage.token = JSON.stringify(res);
-          window.location.reload(true);
-        });
+    async createAccount() {
+      const result = await this.vuexCreateAccount({
+        username: this.username,
+        password: this.password,
+      });
+      if (result.errorExists) {
+        this.error.exists = true;
+        this.error.text = result.errorText;
+      }
     },
     toggleLogin() {
       this.loginSelected = !this.loginSelected;
     },
+    ...mapActions({
+      vuexLogin: "accounts/login",
+      vuexCreateAccount: "accounts/createAccount"
+    }),
   },
   computed: {
     loggedIn: () => {

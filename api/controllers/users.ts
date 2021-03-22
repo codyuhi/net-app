@@ -64,7 +64,6 @@ export default function (pool: PoolClient) {
     },
     async updateAccount(req: express.Request, res: express.Response) {
       if (!req.header('authtoken')) {
-        console.log('got here')
         res.status(403)
         res.send({
           success: false,
@@ -72,6 +71,7 @@ export default function (pool: PoolClient) {
         })
         return
       }
+      console.log("GOTSDLKFJDSJ")
       const db = dbFactory(pool)
       db.users.updateAccount(req.body.id, req.body.username, req.body.password, req.body.personId, req.header('authtoken')!)
         .then((dbResponse) => {
@@ -145,7 +145,8 @@ export default function (pool: PoolClient) {
           res.send({
             success: true,
             token: dbResponse.authtoken,
-            id: dbResponse.userid
+            id: dbResponse.userid,
+            rootPersonId: dbResponse.rootPersonId
           })
         })
         .catch((err) => {

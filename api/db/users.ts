@@ -17,8 +17,8 @@ export default function (conn: PoolClient) {
         .then((res) => {
           if (res && res.rows.length > 0 && res.rows[0].username === name) {
             return {
-             success: false
-           } 
+              success: false
+            }
           }
           return {
             success: true
@@ -26,8 +26,8 @@ export default function (conn: PoolClient) {
         })
         .catch((err) => {
           return {
-          success: false
-        }
+            success: false
+          }
         })
       if (!checkUserResponse.success) {
         return {
@@ -111,6 +111,10 @@ export default function (conn: PoolClient) {
     },
     async updateAccount(id: string, username: string, password: string, personId: string, token: string) {
       const authenticatedUser = await this.getUserIdFromToken(token)
+      console.log("GOT HERE 2")
+      console.log('token is', token)
+      console.log('auth user is', authenticatedUser)
+      console.log('id is', id)
       if (!authenticatedUser.success || authenticatedUser.userId !== id) {
         return {
           code: 403,
@@ -120,6 +124,7 @@ export default function (conn: PoolClient) {
           personId: ''
         }
       }
+      console.log("GOT HERE")
       let updateString = 'UPDATE users SET '
       let updateArray = [id]
       let counter = 2
@@ -241,7 +246,8 @@ export default function (conn: PoolClient) {
               code: 201,
               success: true,
               authtoken: res.rows[0].token,
-              userid: authenticateResponse.data.rows[0].id
+              userid: authenticateResponse.data.rows[0].id,
+              rootPersonId: authenticateResponse.data.rows[0].rootperson
             }
           })
           .catch((err) => {
@@ -250,7 +256,8 @@ export default function (conn: PoolClient) {
               code: 403,
               success: false,
               authtoken: undefined,
-              userid: undefined
+              userid: undefined,
+              rootPersonId: undefined
             }
           })
         return createTokenResponse
@@ -259,7 +266,8 @@ export default function (conn: PoolClient) {
         code: 403,
         success: false,
         authtoken: undefined,
-        userid: undefined
+        userid: undefined,
+        rootPersonId: undefined,
       }
     },
     async logout(token: string) {
