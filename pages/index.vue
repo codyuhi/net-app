@@ -87,6 +87,7 @@ import navbar from "~/components/navbar.vue";
 import homeOptions from "~/components/home-options.vue";
 import intro from "~/components/intro.vue";
 import { mapActions } from "vuex";
+import { state } from "@/store/accounts";
 
 export default Vue.extend({
   data() {
@@ -153,12 +154,12 @@ export default Vue.extend({
     },
     ...mapActions({
       vuexLogin: "accounts/login",
-      vuexCreateAccount: "accounts/createAccount"
+      vuexCreateAccount: "accounts/createAccount",
     }),
   },
   computed: {
     loggedIn: () => {
-      return localStorage.token;
+      return state().token;
     },
   },
 });

@@ -75,6 +75,7 @@ export default Vue.extend({
           };
         }
         this.vuexUpdateUser({ body: body });
+        this.toggleEdit();
       }
     },
     deleteUser() {
@@ -83,7 +84,7 @@ export default Vue.extend({
         this.$store.state.accounts &&
         this.$store.state.accounts.user
       ) {
-        this.vuexDeleteUser()
+        this.vuexDeleteUser();
       }
     },
     toggleEdit() {
@@ -92,7 +93,7 @@ export default Vue.extend({
     ...mapActions({
       vuexGetUser: "accounts/getUser",
       vuexUpdateUser: "accounts/updateUser",
-      vuexDeleteUser: "accounts/deleteUser"
+      vuexDeleteUser: "accounts/deleteUser",
     }),
   },
   beforeMount() {

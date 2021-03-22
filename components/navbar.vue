@@ -43,8 +43,8 @@ Vue.use(BootstrapVue);
 export default {
   data() {
     return {
-      personLink: localStorage.token
-        ? "/persons/" + JSON.parse(localStorage.token).rootperson
+      personLink: state().token
+        ? "/persons/" + state().person
         : "/",
     };
   },
@@ -60,7 +60,7 @@ export default {
   },
   computed: {
     loggedIn: () => {
-      return localStorage.token;
+      return state().user;
     },
     ...mapState({
       store: "data",
