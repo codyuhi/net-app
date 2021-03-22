@@ -48,7 +48,6 @@ export default Vue.extend({
     async getUser() {
       if (this.$store.state.accounts && this.$store.state.accounts.user) {
         const user = await this.vuexGetUser();
-        console.log(user)
         this.username = user.username;
         this.userId = user.userId;
         this.personId = user.personId;

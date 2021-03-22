@@ -111,10 +111,6 @@ export default function (conn: PoolClient) {
     },
     async updateAccount(id: string, username: string, password: string, personId: string, token: string) {
       const authenticatedUser = await this.getUserIdFromToken(token)
-      console.log("GOT HERE 2")
-      console.log('token is', token)
-      console.log('auth user is', authenticatedUser)
-      console.log('id is', id)
       if (!authenticatedUser.success || authenticatedUser.userId !== id) {
         return {
           code: 403,
@@ -124,7 +120,6 @@ export default function (conn: PoolClient) {
           personId: ''
         }
       }
-      console.log("GOT HERE")
       let updateString = 'UPDATE users SET '
       let updateArray = [id]
       let counter = 2
@@ -225,7 +220,6 @@ export default function (conn: PoolClient) {
           throw Error('Username/password combination not found')
         })
         .catch((err) => {
-          // console.error(err)
           return {
             code: 403,
             success: false,

@@ -19,7 +19,6 @@ export const mutations = {
             id: user,
             rootPersonId: person
         }
-        console.log(localData)
         localStorage.token = JSON.stringify(localData)
         return localData
     },
@@ -138,7 +137,6 @@ export const actions = {
                     console.error(json.message)
                     return null
                 }
-                console.log(json)
                 return {
                     username: json.data.username,
                     userId: json.data.id,
@@ -152,7 +150,6 @@ export const actions = {
     },
     updateUser({ dispatch }, { body }) {
         const data = state()
-        console.log('body is', body)
         const result = fetch(`http://localhost:3000/api/accounts/${data.user}`, {
             method: "PUT",
             headers: {
@@ -170,8 +167,6 @@ export const actions = {
                     alert("Something went wrong while updating account");
                     return;
                 }
-                console.log('person is', json)
-                console.log("DATAS IS", data)
                 mutations.setToken(this, {
                     token: data.token,
                     user: data.user,
