@@ -254,7 +254,6 @@ export default function (conn: PoolClient) {
           throw Error('Username/password combination not found')
         })
         .catch((err) => {
-          // console.error(err)
           return {
             code: 403,
             success: false,
@@ -275,7 +274,8 @@ export default function (conn: PoolClient) {
               code: 201,
               success: true,
               authtoken: res.rows[0].token,
-              userid: authenticateResponse.data.rows[0].id
+              userid: authenticateResponse.data.rows[0].id,
+              rootPersonId: authenticateResponse.data.rows[0].rootperson
             }
           })
           .catch((err) => {
@@ -284,7 +284,8 @@ export default function (conn: PoolClient) {
               code: 403,
               success: false,
               authtoken: undefined,
-              userid: undefined
+              userid: undefined,
+              rootPersonId: undefined
             }
           })
         return createTokenResponse
@@ -293,7 +294,8 @@ export default function (conn: PoolClient) {
         code: 403,
         success: false,
         authtoken: undefined,
-        userid: undefined
+        userid: undefined,
+        rootPersonId: undefined,
       }
     },
     async logout(token: string) {

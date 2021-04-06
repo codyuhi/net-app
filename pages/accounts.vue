@@ -20,7 +20,7 @@
         <h2>Password:</h2>
         <p><input v-model="password" type="password" /></p>
         <h2>UserID:</h2>
-        <p><input v-model="userId" type="text" disabled/></p>
+        <p><input v-model="userId" type="text" disabled /></p>
         <h2>PersonID:</h2>
         <p><input v-model="personId" type="text" /></p>
         <input type="button" value="Edit" @click="updateUser()" />
@@ -32,6 +32,7 @@
 
 <script lang="ts">
 import Vue from "vue";
+import { mapActions } from "vuex";
 
 export default Vue.extend({
   data() {
@@ -44,105 +45,56 @@ export default Vue.extend({
     };
   },
   methods: {
-    getUser() {
-      if (localStorage.token && JSON.parse(localStorage.token).id) {
-        const token = JSON.parse(localStorage.token);
-        fetch(`http://localhost:3000/api/accounts/${token.id}`, {
-          headers: {
-            authtoken: token.token,
-          },
-        })
-          .then((res) => {
-            return res.json();
-          })
-          .then((res) => {
-            if (!res.success) {
-              alert(res.message);
-              return;
-            }
-            console.log(res);
-            this.username = res.data.username;
-            this.userId = res.data.id;
-            this.personId = res.data.personId;
-          });
+    async getUser() {
+      if (this.$store.state.accounts && this.$store.state.accounts.user) {
+        const user = await this.vuexGetUser();
+        this.username = user.username;
+        this.userId = user.userId;
+        this.personId = user.personId;
       }
     },
     updateUser() {
       if (
         confirm("Are you sure you want to make these changes?") &&
-        localStorage.token &&
-        JSON.parse(localStorage.token).id
+        this.$store.state.accounts &&
+        this.$store.state.accounts.user
       ) {
         let body;
         if (this.password !== "********" && this.password !== "") {
           body = {
+            id: this.userId,
             username: this.username,
             personId: this.personId,
             password: this.password,
           };
         } else {
           body = {
+            id: this.userId,
             username: this.username,
             personId: this.personId,
           };
         }
-        const token = JSON.parse(localStorage.token);
-        fetch(`http://localhost:3000/api/accounts/${token.id}`, {
-          method: "PUT",
-          headers: {
-            authtoken: token.token,
-            "Content-type": "application/json; charset=utf-8"
-          },
-          body: JSON.stringify(body),
-        })
-          .then((res) => {
-              console.log(res)
-            return res.json();
-          })
-          .then((res) => {
-              if(!res.success) {
-                  alert('Something went wrong while updating account')
-                  return
-              }
-              console.log(res)
-          })
-          .catch((err) => {
-            console.error(err);
-          });
+        this.vuexUpdateUser({ body: body });
+        this.toggleEdit();
       }
     },
     deleteUser() {
       if (
         confirm("Are you sure you want to delete your account?") &&
-        localStorage.token &&
-        JSON.parse(localStorage.token).id
+        this.$store.state.accounts &&
+        this.$store.state.accounts.user
       ) {
-        const token = JSON.parse(localStorage.token);
-        fetch(`http://localhost:3000/api/accounts/${token.id}`, {
-          method: "DELETE",
-          headers: {
-            authtoken: token.token,
-          },
-        })
-          .then((res) => {
-            return res.status;
-          })
-          .then((res) => {
-            if (res !== 204) {
-              alert("Something went wrong while deleting account");
-              return;
-            }
-            localStorage.removeItem("token");
-            window.location.href = "/";
-          })
-          .catch((err) => {
-            console.error(err);
-          });
+        this.vuexDeleteUser();
       }
     },
     toggleEdit() {
       this.editing = !this.editing;
     },
+    ...mapActions({
+      vuexGetUser: "accounts/getUser",
+      vuexUpdateUser: "accounts/updateUser",
+      vuexDeleteUser: "accounts/deleteUser",
+    }),
   },
   beforeMount() {
     this.getUser();
