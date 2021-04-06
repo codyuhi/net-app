@@ -10,7 +10,7 @@
         <intro></intro>
         <home-options
           v-for="view in views"
-          :key="view"
+          :key="view.name"
           :name="view.name"
           :link="view.link"
         ></home-options>
@@ -24,9 +24,19 @@
           <br />
           <form>
             <p>
-              Username<br /><input v-model="username" type="text" placeholder="Enter Username" />
+              Username<br /><input
+                v-model="username"
+                type="text"
+                placeholder="Enter Username"
+              />
             </p>
-            <p>Password<br /><input v-model="password" type="password" placeholder="Enter Password" /></p>
+            <p>
+              Password<br /><input
+                v-model="password"
+                type="password"
+                placeholder="Enter Password"
+              />
+            </p>
             <input value="Login" type="button" @click="login()" />
           </form>
           <br />
@@ -40,10 +50,24 @@
           <br />
           <form>
             <p>
-              Username<br /><input v-model="username" type="text" placeholder="Enter Username" />
+              Username<br /><input
+                v-model="username"
+                type="text"
+                placeholder="Enter Username"
+              />
             </p>
-            <p>Password<br /><input v-model="password" type="password" placeholder="Enter Password" /></p>
-            <input value="Create Account" type="button" @click="createAccount()" />
+            <p>
+              Password<br /><input
+                v-model="password"
+                type="password"
+                placeholder="Enter Password"
+              />
+            </p>
+            <input
+              value="Create Account"
+              type="button"
+              @click="createAccount()"
+            />
           </form>
           <br />
           <p>
@@ -104,6 +128,7 @@ export default Vue.extend({
   components: { navbar, homeOptions },
   methods: {
     login() {
+      console.log("0");
       fetch("http://localhost:3000/api/accounts/login", {
         method: "POST",
         body: JSON.stringify({
@@ -128,11 +153,13 @@ export default Vue.extend({
           window.location.reload(true);
         })
         .catch((err) => {
-            this.error.exists = true;
-            this.error.text = err;
+          console.log("1");
+          this.error.exists = true;
+          this.error.text = err;
         });
     },
     createAccount() {
+      console.log("2");
       fetch("http://localhost:3000/api/accounts", {
         method: "POST",
         body: JSON.stringify({
@@ -153,6 +180,7 @@ export default Vue.extend({
             return;
           }
           this.error.exists = false;
+          console.log("3");
           localStorage.token = JSON.stringify(res);
           window.location.reload(true);
         });

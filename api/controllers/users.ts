@@ -6,7 +6,7 @@ export default function (pool: PoolClient) {
   return {
     async createAccount(req: express.Request, res: express.Response) {
       const db = dbFactory(pool)
-      db.users.createAccount(req.body.username, req.body.password)
+      db.users.createAccount(req.body.username, req.body.password, req.body.firstName, req.body.lastName)
         .then((dbResponse) => {
           if (!dbResponse.success) {
             throw Error(dbResponse.code.toString())

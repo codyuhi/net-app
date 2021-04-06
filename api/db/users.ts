@@ -4,21 +4,21 @@ import { v4 as uuid } from 'uuid'
 
 export default function (conn: PoolClient) {
   return {
-    async createAccount(name: string, password: string) {
+    async createAccount(username: string, password: string, firstName: string, lastName: string) {
       const userId = uuid()
       const rootPersonId = uuid()
       const hashedPass = await bcrypt.hashSync(password, 10)
       const checkUserResponse = await conn.query({
         text: `SELECT * FROM users WHERE username=$1`,
         values: [
-          name
+          username
         ]
       })
         .then((res) => {
-          if (res && res.rows.length > 0 && res.rows[0].username === name) {
+          if (res && res.rows.length > 0 && res.rows[0].username === username) {
             return {
-             success: false
-           } 
+              success: false
+            }
           }
           return {
             success: true
@@ -26,10 +26,43 @@ export default function (conn: PoolClient) {
         })
         .catch((err) => {
           return {
-          success: false
-        }
+            success: false
+          }
         })
       if (!checkUserResponse.success) {
+        return {
+          code: 400,
+          success: false,
+          id: '',
+          personId: '',
+          authtoken: ''
+        }
+      }
+      const personDbResponse = await conn.query({
+        text: `INSERT INTO "persons" ("id", "rootperson", "firstname", "lastname") VALUES ($1, $2, $3, $4) RETURNING *;`,
+        values: [
+          rootPersonId,
+          true,
+          firstName,
+          lastName,
+        ],
+      })
+        .then((res) => {
+          if (res && res.rows.length > 0) {
+            return {
+              success: true,
+            }
+          }
+          return {
+            success: false,
+          }
+        })
+        .catch((err) => {
+          return {
+            success: false
+          }
+        })
+      if (!personDbResponse.success) {
         return {
           code: 400,
           success: false,
@@ -42,13 +75,13 @@ export default function (conn: PoolClient) {
         text: `INSERT INTO "users" ("id", "username", "password", "rootperson") VALUES ($1, $2, $3, $4) RETURNING *;`,
         values: [
           userId,
-          name,
+          username,
           hashedPass,
           rootPersonId,
         ]
       })
         .then(async (res) => {
-          const auth = await this.login(name, password)
+          const auth = await this.login(username, password)
           console.log(res.rows[0])
           return {
             code: 200,
@@ -68,6 +101,7 @@ export default function (conn: PoolClient) {
             authtoken: ''
           }
         })
+
       return dbResponse
     },
     async getAccount(id: string, token: string) {

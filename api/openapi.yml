@@ -197,11 +197,11 @@ paths:
           description: "Invalid login data format provided"
         "403":
           description: "Invalid username/password combination"
-#       security:
-#         - ApiKeyAuth:
-#           - write-own
-#         - AdminAuth:
-#           - write-all
+  #       security:
+  #         - ApiKeyAuth:
+  #           - write-own
+  #         - AdminAuth:
+  #           - write-all
   /api/accounts/logout:
     summary: "Endpoint for the logout operation"
     delete:
@@ -224,745 +224,760 @@ paths:
           description: "Logged out successfully"
         "400":
           description: "Invalid request"
+  #       security:
+  #         - ApiKeyAuth:
+  #           - write-own
+  #         - AdminAuth:
+  #           - write-all
+  #   # Person Endpoints
+  /api/persons:
+    summary: "Endpoint for operations related to Persons"
+    post:
+      tags:
+        - "persons"
+        - "create"
+      x-controller: persons
+      x-operation: createPerson
+      summary: "Create Person"
+      operationId: "createPerson"
+      parameters:
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Person"
+      responses:
+        "201":
+          description: "Created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Person"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+    #       security:
+    #         - ApiKeyAuth:
+    #           - write-own
+    #         - AdminAuth:
+    #           - write-all
+    get:
+      tags:
+        - "persons"
+        - "networks"
+        - "read"
+      x-controller: persons
+      x-operation: getPersons
+      summary: "Get all Persons"
+      operationId: "getPersons"
+      parameters:
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Network"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "No Persons found for the authenticated User Account's network"
+  #       security:
+  #         - ApiKeyAuth:
+  #           - read-own
+  #         - AdminAuth:
+  #           - read-all
+  /api/persons/{personId}:
+    get:
+      tags:
+        - "persons"
+        - "read"
+      x-controller: persons
+      x-operation: getPerson
+      summary: "Get Person data by id"
+      operationId: "getPerson"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "The unique Person identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Person"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
+    #       security:
+    #         - ApiKeyAuth:
+    #           - read-own
+    #         - AdminAuth:
+    #           - read-all
+    put:
+      tags:
+        - "persons"
+        - "update"
+      x-controller: persons
+      x-operation: updatePerson
+      summary: "Update Person data"
+      operationId: "updatePerson"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "The unique Person identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Person"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Person"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Person by id"
+    #       security:
+    #         - ApiKeyAuth:
+    #           - read-own
+    #         - AdminAuth:
+    #           - read-all
+    delete:
+      tags:
+        - "persons"
+        - "delete"
+      x-controller: persons
+      x-operation: deletePerson
+      summary: "Delete Person"
+      description: "This can only be done by the User Account(s) who holds the correct permissions"
+      operationId: "deletePerson"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "The unique Person identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "204":
+          description: "Deleted"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions to delete Person"
+        "404":
+          description: "Unable to find object by id"
+  #       security:
+  #         - ApiKeyAuth:
+  #           - write-own
+  #         - AdminAuth:
+  #           - write-all
+  /api/persons/{personId}/network:
+    summary: "Endpoint for operations related to Person networks"
+    post:
+      tags:
+        - "networks"
+        - "persons"
+        - "create"
+      x-controller: persons
+      x-operation: addPersonToNetwork
+      summary: "Add Person to network"
+      operationId: "addPersonToNetwork"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "The unique Person identifier"
+          schema:
+            type: "string"
+          required: true
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "201":
+          description: "Added Person to network successfully"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
+    #       security:
+    #         - ApiKeyAuth:
+    #           - write-own
+    #         - AdminAuth:
+    #           - write-all
+    get:
+      tags:
+        - "persons"
+        - "networks"
+        - "read"
+      x-controller: persons
+      x-operation: getPersonsByNetwork
+      summary: "Get a list of Persons based on network"
+      operationId: "getPersonsByNetwork"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "The unique Person identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Network"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "No Persons found for the authenticated User Account's network"
+  #       security:
+  #         - ApiKeyAuth:
+  #           - read-own
+  #         - AdminAuth:
+  #           - read-all
+  /api/persons/{personId}/network/{person2Id}:
+    summary: "Endpoint for operations related to the Network connection between two Persons"
+    delete:
+      tags:
+        - "networks"
+        - "persons"
+        - "delete"
+      x-controller: persons
+      x-operation: deletePersonFromNetwork
+      summary: "Delete Person from network"
+      operationId: "deletePersonFromNetwork"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "The unique Person identifier for the root Person"
+          schema:
+            type: "string"
+          required: true
+        - name: "person2Id"
+          in: "path"
+          description: "The unique Person identifier for the Person to be removed from the network"
+          schema:
+            type: "string"
+          required: true
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "204":
+          description: "Deleted Person from network"
+        "403":
+          description: "Insufficient permissions to delete Person from network"
+        "404":
+          description: "Unable to find Person by id"
+  /api/persons/{personId}/dateRequested:
+    put:
+      tags:
+        - "persons"
+        - "update"
+      x-controller: persons
+      x-operation: updateDateRequested
+      summary: "Update Date Requested data"
+      operationId: "updateDateRequested"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "The unique Person identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DateTime"
+      responses:
+        "200":
+          description: "Success"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
+  #       security:
+  #         - ApiKeyAuth:
+  #           - write-own
+  #         - AdminAuth:
+  #           - write-all
+  /api/persons/{personId}/dateContacted:
+    put:
+      tags:
+        - "persons"
+        - "update"
+      x-controller: persons
+      x-operation: updateDateContacted
+      summary: "Update Date Contacted data"
+      operationId: "updateDateContacted"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "The unique Person identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DateTime"
+      responses:
+        "200":
+          description: "Success"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Person by id"
+  #       security:
+  #         - ApiKeyAuth:
+  #           - write-own
+  #         - AdminAuth:
+  #           - write-all
+  /api/persons/{personId}/personReplied:
+    put:
+      tags:
+        - "persons"
+        - "update"
+      x-controller: persons
+      x-operation: updateDateRequested
+      summary: "Update Person Replied data"
+      operationId: "updatePersonReplied"
+      parameters:
+        - name: "personId"
+          in: "path"
+          description: "The unique Person identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                replied:
+                  type: "boolean"
+      responses:
+        "200":
+          description: "Success"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
+  #       security:
+  #         - ApiKeyAuth:
+  #           - write-own
+  #         - AdminAuth:
+  #           - write-all
+  #   # Organization Endpoints
+  /api/organizations:
+    summary: "Endpoint for operations related to Organizations"
+    post:
+      tags:
+        - "organizations"
+        - "create"
+      x-controller: organizations
+      x-operation: createOrganization
+      summary: "Create Organization"
+      operationId: "createOrganization"
+      parameters:
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Organization"
+      responses:
+        "201":
+          description: "Created"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+    get:
+      tags:
+        - "organizations"
+        - "create"
+      x-controller: organizations
+      x-operation: getOrganizations
+      summary: "Create Organization"
+      operationId: "getOrganizations"
+      parameters:
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Person"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
 #       security:
 #         - ApiKeyAuth:
 #           - write-own
 #         - AdminAuth:
 #           - write-all
-#   # Person Endpoints
-#   /persons:
-#     summary: "Endpoint for operations related to Persons"
-#     post:
-#       tags:
-#         - "persons"
-#         - "create"
-#       summary: "Create Person"
-#       operationId: "create-person"
-#       parameters:
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       requestBody:
-#         required: true
-#         content:
-#           application/json:
-#             schema:
-#               $ref: "#/components/schemas/Person"
-#       responses:
-#         "201":
-#           description: "Created"
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: "#/components/schemas/Person"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
+  /api/organizations/{organizationId}:
+    get:
+      tags:
+        - "organizations"
+        - "read"
+      x-controller: organizations
+      x-operation: getOrganization
+      summary: "Get Organization data by id"
+      operationId: "getOrganization"
+      parameters:
+        - name: "organizationId"
+          in: "path"
+          description: "The unique Organization identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+        "400":
+          description: "Invalid request"
+        "404":
+          description: "Unable to find object by id"
+#       security:
+#         - ApiKeyAuth:
+#           - read-all
+#         - AdminAuth:
+#           - read-all
+    put:
+      tags:
+        - "organizations"
+        - "update"
+      x-controller: organizations
+      x-operation: updateOrganization
+      summary: "Update Organization data"
+      operationId: "updateOrganization"
+      parameters:
+        - name: "organizationId"
+          in: "path"
+          description: "The unique Organization identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Account"
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Organization"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
 #       security:
 #         - ApiKeyAuth:
 #           - write-own
 #         - AdminAuth:
 #           - write-all
-#     get:
-#       tags:
-#         - "persons"
-#         - "networks"
-#         - "read"
-#       summary: "Get all Persons in network"
-#       operationId: "get-all-persons"
-#       parameters:
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       responses:
-#         "200":
-#           description: "Success"
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: "#/components/schemas/Network"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "No Persons found for the authenticated User Account's network"
+    delete:
+      tags:
+        - "organizations"
+        - "delete"
+      x-controller: organizations
+      x-operation: deleteOrganization
+      summary: "Delete Organization"
+      description: "This can only be done by the User Account(s) who holds the correct permissions"
+      operationId: "deleteOrganization"
+      parameters:
+        - name: "organizationId"
+          in: "path"
+          description: "The unique Organization identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "204":
+          description: "Deleted"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Organization by id"
+#       security:
+#         - ApiKeyAuth:
+#           - write-own
+#         - AdminAuth:
+#           - write-all
+  /api/organizations/{organizationId}/location:
+    post:
+      tags:
+        - "organizations"
+        - "locations"
+        - "create"
+      x-controller: organizations
+      x-operation: addOrganizationLocation
+      summary: "Add Organization Location"
+      operationId: "addOrganizationLocation"
+      parameters:
+        - name: "organizationId"
+          in: "path"
+          description: "The unique Organization identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Location"
+      responses:
+        "201":
+          description: "Location added successfully to Organization"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
+#       security:
+#         - ApiKeyAuth:
+#           - write-own
+#         - AdminAuth:
+#           - write-all
+  /api/organizations/location/{locationId}:
+    get:
+      tags:
+        - "organizations"
+        - "locations"
+        - "read"
+      x-controller: organizations
+      x-operation: getOrganizationsByLocation
+      summary: "Get a list of Organizations based on Location"
+      operationId: "getOrganizationsByLocation"
+      parameters:
+        - name: "locationId"
+          in: "path"
+          description: "The unique Location identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Organization"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "No Organizations found for this location"
 #       security:
 #         - ApiKeyAuth:
 #           - read-own
 #         - AdminAuth:
 #           - read-all
-#   /persons/{personId}:
-#     get:
-#       tags:
-#         - "persons"
-#         - "read"
-#       summary: "Get Person data by id"
-#       operationId: "get-person"
-#       parameters:
-#         - name: "personId"
-#           in: "path"
-#           description: "The unique Person identifier"
-#           required: true
-#           schema:
-#             type: "string"
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       responses:
-#         "200":
-#           description: "Success"
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: "#/components/schemas/Person"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "Unable to find object by id"
-#       security:
-#         - ApiKeyAuth:
-#           - read-own
-#         - AdminAuth:
-#           - read-all
-#     put:
-#       tags:
-#         - "persons"
-#         - "update"
-#       summary: "Update Person data"
-#       operationId: "update-person"
-#       parameters:
-#         - name: "personId"
-#           in: "path"
-#           description: "The unique Person identifier"
-#           required: true
-#           schema:
-#             type: "string"
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       requestBody:
-#         required: true
-#         content:
-#           application/json:
-#             schema:
-#               $ref: "#/components/schemas/Person"
-#       responses:
-#         "200":
-#           description: "Success"
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: "#/components/schemas/Person"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "Unable to find Person by id"
-#       security:
-#         - ApiKeyAuth:
-#           - read-own
-#         - AdminAuth:
-#           - read-all
-#     delete:
-#       tags:
-#         - "persons"
-#         - "delete"
-#       summary: "Delete Person"
-#       description: "This can only be done by the User Account(s) who holds the correct permissions"
-#       operationId: "delete-person"
-#       parameters:
-#         - name: "personId"
-#           in: "path"
-#           description: "The unique Person identifier"
-#           required: true
-#           schema:
-#             type: "string"
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       responses:
-#         "204":
-#           description: "Deleted"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions to delete Person"
-#         "404":
-#           description: "Unable to find object by id"
-#       security:
-#         - ApiKeyAuth:
-#           - write-own
-#         - AdminAuth:
-#           - write-all
-#   /persons/{personId}/network:
-#     summary: "Endpoint for operations related to Person networks"
-#     post:
-#       tags:
-#         - "networks"
-#         - "persons"
-#         - "create"
-#       summary: "Add Person to network"
-#       operationId: "add-person-to-network"
-#       parameters:
-#         - name: "personId"
-#           in: "path"
-#           description: "The unique Person identifier"
-#           schema:
-#             type: "string"
-#           required: true
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       requestBody:
-#         required: true
-#         content:
-#           application/json:
-#             schema:
-#               properties:
-#                 personId:
-#                   type: "string"
-#                   format: "uuid"
-#       responses:
-#         "201":
-#           description: "Added Person to network successfully"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "Unable to find object by id"
-#       security:
-#         - ApiKeyAuth:
-#           - write-own
-#         - AdminAuth:
-#           - write-all
-#     get:
-#       tags:
-#         - "persons"
-#         - "networks"
-#         - "read"
-#       summary: "Get a list of Persons based on network"
-#       operationId: "get-persons-by-network"
-#       parameters:
-#         - name: "personId"
-#           in: "path"
-#           description: "The unique Person identifier"
-#           required: true
-#           schema:
-#             type: "string"
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       responses:
-#         "200":
-#           description: "Success"
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: "#/components/schemas/Network"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "No Persons found for the authenticated User Account's network"
-#       security:
-#         - ApiKeyAuth:
-#           - read-own
-#         - AdminAuth:
-#           - read-all
-#   /persons/{personId}/network/{person2Id}:
-#     summary: "Endpoint for operations related to the Network connection between two Persons"
-#     delete:
-#       tags:
-#         - "networks"
-#         - "persons"
-#         - "delete"
-#       summary: "Delete Person from network"
-#       operationId: "delete-person-from-network"
-#       parameters:
-#         - name: "personId"
-#           in: "path"
-#           description: "The unique Person identifier for the root Person"
-#           schema:
-#             type: "string"
-#           required: true
-#         - name: "person2Id"
-#           in: "path"
-#           description: "The unique Person identifier for the Person to be removed from the network"
-#           schema:
-#             type: "string"
-#           required: true
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       responses:
-#         "204":
-#           description: "Deleted Person from network"
-#         "403":
-#           description: "Insufficient permissions to delete Person from network"
-#         "404":
-#           description: "Unable to find Person by id"
-#   /persons/{personId}/dateRequested:
-#     put:
-#       tags:
-#         - "persons"
-#         - "update"
-#       summary: "Update Date Requested data"
-#       operationId: "update-date-requested"
-#       parameters:
-#         - name: "personId"
-#           in: "path"
-#           description: "The unique Person identifier"
-#           required: true
-#           schema:
-#             type: "string"
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       requestBody:
-#         required: true
-#         content:
-#           application/json:
-#             schema:
-#               $ref: "#/components/schemas/DateTime"
-#       responses:
-#         "200":
-#           description: "Success"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "Unable to find object by id"
-#       security:
-#         - ApiKeyAuth:
-#           - write-own
-#         - AdminAuth:
-#           - write-all
-#   /persons/{personId}/dateAdded:
-#     put:
-#       tags:
-#         - "persons"
-#         - "update"
-#       summary: "Update Date Added data"
-#       operationId: "update-date-added"
-#       parameters:
-#         - name: "personId"
-#           in: "path"
-#           description: "The unique Person identifier"
-#           required: true
-#           schema:
-#             type: "string"
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       requestBody:
-#         required: true
-#         content:
-#           application/json:
-#             schema:
-#               $ref: "#/components/schemas/DateTime"
-#       responses:
-#         "200":
-#           description: "Success"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "Unable to find person by id"
-#       security:
-#         - ApiKeyAuth:
-#           - write-own
-#         - AdminAuth:
-#           - write-all
-#   /persons/{personId}/dateContacted:
-#     put:
-#       tags:
-#         - "persons"
-#         - "update"
-#       summary: "Update Date Contacted data"
-#       operationId: "update-date-contacted"
-#       parameters:
-#         - name: "personId"
-#           in: "path"
-#           description: "The unique Person identifier"
-#           required: true
-#           schema:
-#             type: "string"
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       requestBody:
-#         required: true
-#         content:
-#           application/json:
-#             schema:
-#               $ref: "#/components/schemas/DateTime"
-#       responses:
-#         "200":
-#           description: "Success"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "Unable to find Person by id"
-#       security:
-#         - ApiKeyAuth:
-#           - write-own
-#         - AdminAuth:
-#           - write-all
-#   /persons/{personId}/personReplied:
-#     put:
-#       tags:
-#         - "persons"
-#         - "update"
-#       summary: "Update Person Replied data"
-#       operationId: "udpate-person-replied"
-#       parameters:
-#         - name: "personId"
-#           in: "path"
-#           description: "The unique Person identifier"
-#           required: true
-#           schema:
-#             type: "string"
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       requestBody:
-#         required: true
-#         content:
-#           application/json:
-#             schema:
-#               properties:
-#                 replied:
-#                   type: "boolean"
-#       responses:
-#         "200":
-#           description: "Success"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "Unable to find object by id"
-#       security:
-#         - ApiKeyAuth:
-#           - write-own
-#         - AdminAuth:
-#           - write-all
-#   # Organization Endpoints
-#   /organizations:
-#     summary: "Endpoint for operations related to Organizations"
-#     post:
-#       tags:
-#         - "organizations"
-#         - "create"
-#       summary: "Create Organization"
-#       operationId: "create-organization"
-#       parameters:
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       requestBody:
-#         required: true
-#         content:
-#           application/json:
-#             schema:
-#               $ref: "#/components/schemas/Organization"
-#       responses:
-#         "201":
-#           description: "Created"
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: "#/components/schemas/Organization"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#       security:
-#         - ApiKeyAuth:
-#           - write-own
-#         - AdminAuth:
-#           - write-all
-#   /organizations/{organizationId}:
-#     get:
-#       tags:
-#         - "organizations"
-#         - "read"
-#       summary: "Get Organization data by id"
-#       operationId: "get-organization"
-#       parameters:
-#         - name: "organizationId"
-#           in: "path"
-#           description: "The unique Organization identifier"
-#           required: true
-#           schema:
-#             type: "string"
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       responses:
-#         "200":
-#           description: "Success"
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: "#/components/schemas/Organization"
-#         "400":
-#           description: "Invalid request"
-#         "404":
-#           description: "Unable to find object by id"
-#       security:
-#         - ApiKeyAuth:
-#           - read-all
-#         - AdminAuth:
-#           - read-all
-#     put:
-#       tags:
-#         - "organizations"
-#         - "update"
-#       summary: "Update Organization data"
-#       operationId: "update-organization"
-#       parameters:
-#         - name: "organizationId"
-#           in: "path"
-#           description: "The unique Organization identifier"
-#           required: true
-#           schema:
-#             type: "string"
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       requestBody:
-#         required: true
-#         content:
-#           application/json:
-#             schema:
-#               $ref: "#/components/schemas/Account"
-#       responses:
-#         "200":
-#           description: "Success"
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: "#/components/schemas/Organization"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "Unable to find object by id"
-#       security:
-#         - ApiKeyAuth:
-#           - write-own
-#         - AdminAuth:
-#           - write-all
-#     delete:
-#       tags:
-#         - "organizations"
-#         - "delete"
-#       summary: "Delete Organization"
-#       description: "This can only be done by the User Account(s) who holds the correct permissions"
-#       operationId: "delete-organization"
-#       parameters:
-#         - name: "organizationId"
-#           in: "path"
-#           description: "The unique Organization identifier"
-#           required: true
-#           schema:
-#             type: "string"
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       responses:
-#         "204":
-#           description: "Deleted"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "Unable to find Organization by id"
-#       security:
-#         - ApiKeyAuth:
-#           - write-own
-#         - AdminAuth:
-#           - write-all
-#   /organizations/{organizationId}/location:
-#     post:
-#       tags:
-#         - "organizations"
-#         - "locations"
-#         - "create"
-#       summary: "Add Organization Location"
-#       operationId: "add-organization-location"
-#       parameters:
-#         - name: "organizationId"
-#           in: "path"
-#           description: "The unique Organization identifier"
-#           required: true
-#           schema:
-#             type: "string"
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       requestBody:
-#         required: true
-#         content:
-#           application/json:
-#             schema:
-#               $ref: "#/components/schemas/Location"
-#       responses:
-#         "201":
-#           description: "Location added successfully to Organization"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "Unable to find object by id"
-#       security:
-#         - ApiKeyAuth:
-#           - write-own
-#         - AdminAuth:
-#           - write-all
-#   /organizations/location/{locationId}:
-#     get:
-#       tags:
-#         - "organizations"
-#         - "locations"
-#         - "read"
-#       summary: "Get a list of Organizations based on Location"
-#       operationId: "get-organizations-by-location"
-#       parameters:
-#         - name: "locationId"
-#           in: "path"
-#           description: "The unique Location identifier"
-#           required: true
-#           schema:
-#             type: "string"
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       responses:
-#         "200":
-#           description: "Success"
-#           content:
-#             application/json:
-#               schema:
-#                 type: "array"
-#                 items:
-#                   $ref: "#/components/schemas/Organization"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "No Organizations found for this location"
-#       security:
-#         - ApiKeyAuth:
-#           - read-own
-#         - AdminAuth:
-#           - read-all
-#   /organizations/{organizationId}/position:
-#     post:
-#       tags:
-#         - "organizations"
-#         - "positions"
-#         - "create"
-#       summary: "Add Organization Position"
-#       operationId: "add-organization-position"
-#       parameters:
-#         - name: "organizationId"
-#           in: "path"
-#           description: "The unique Organization identifier"
-#           required: true
-#           schema:
-#             type: "string"
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       requestBody:
-#         required: true
-#         content:
-#           application/json:
-#             schema:
-#               $ref: "#/components/schemas/Position"
-#       responses:
-#         "201":
-#           description: "Position added successfully to Organization"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "Unable to find Organization by id"
+  /api/organizations/{organizationId}/position:
+    post:
+      tags:
+        - "organizations"
+        - "positions"
+        - "create"
+      x-controller: organizations
+      x-operation: addOrganizationPosition
+      summary: "Add Organization Position"
+      operationId: "addOrganizationPosition"
+      parameters:
+        - name: "organizationId"
+          in: "path"
+          description: "The unique Organization identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Position"
+      responses:
+        "201":
+          description: "Position added successfully to Organization"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find Organization by id"
 #       security:
 #         - ApiKeyAuth:
 #           - write-own
@@ -1815,6 +1830,10 @@ components:
           type: "string"
           # format: "uuid"
         username:
+          type: "string"
+        firstName:
+          type: "string"
+        lastName:
           type: "string"
         password:
           type: "string"

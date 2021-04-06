@@ -4,7 +4,9 @@
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item href="/"><font-awesome-icon icon="users"/> NetApp</b-nav-item>
+          <b-nav-item href="/"
+            ><font-awesome-icon icon="users" /> NetApp</b-nav-item
+          >
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
@@ -14,7 +16,7 @@
           <b-nav-item @click="logout()">Logout</b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto" v-else>
-            <b-nav-item href="/">Login</b-nav-item>
+          <b-nav-item href="/">Login</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -26,49 +28,59 @@ import Vue from "vue";
 import BootstrapVue from "bootstrap-vue";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUsers } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faUsers } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-library.add(faUsers)
+library.add(faUsers);
 
-Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 Vue.use(BootstrapVue);
 
 export default {
   data() {
-    return {
-      personLink: localStorage.token ? '/persons/' + JSON.parse(localStorage.token).rootperson : '/',
-    };
+    try {
+      return {
+        personLink: localStorage.token
+          ? "/persons/" + JSON.parse(localStorage.token).rootperson
+          : "/",
+      };
+    } catch (err) {
+      localStorage.removeItem("token");
+      window.location.reload();
+      return {
+        personLink: "/",
+      };
+    }
   },
   methods: {
-      logout() {
-        if(localStorage.token) {
-          console.log('got here')
-          const token = JSON.parse(localStorage.token).token
-          console.log(token)
-          fetch("http://localhost:3000/api/accounts/logout", {
-            method: "DELETE",
-            headers: {
-              "authtoken": token
-            }
-          })
+    logout() {
+      if (localStorage.token) {
+        console.log("got here");
+        const token = JSON.parse(localStorage.token).token;
+        console.log(token);
+        fetch("http://localhost:3000/api/accounts/logout", {
+          method: "DELETE",
+          headers: {
+            authtoken: token,
+          },
+        })
           .then((res) => {
             return res.status;
           })
           .then((res) => {
-            if(res !== 204) {
-              throw Error('Something went wrong while logging you out')
+            if (res !== 204) {
+              throw Error("Something went wrong while logging you out");
             }
-            localStorage.removeItem('token')
-            window.location.href = "/"
+            localStorage.removeItem("token");
+            window.location.href = "/";
           })
           .catch((err) => {
-            console.error(err)
-          })
-        }
+            console.error(err);
+          });
       }
+    },
   },
   computed: {
     loggedIn: () => {
