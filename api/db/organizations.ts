@@ -31,6 +31,108 @@ export default function (conn: PoolClient) {
       })
         .then((res) => {
           console.log(res.rows[0])
+          res.rows[0].locations.forEach(async (location: { id: string, name: string, description: string }) => {
+            const locationDb = await conn.query({
+              text: 'SELECT * FROM locations WHERE id=$1',
+              values: [
+                location.id
+              ]
+            })
+              .then((res2) => {
+                if (res2.rows.length > 0) {
+                  return {
+                    exists: true,
+                    posId: res2.rows[0].id
+                  }
+                }
+                return {
+                  exists: false,
+                  posId: null
+                }
+              })
+              .catch((err) => {
+                return {
+                  exists: false,
+                  posId: null,
+                }
+              })
+            if (!locationDb.exists) {
+              await conn.query({
+                text: 'INSERT INTO "locations" ("id", "name", "description") VALUES ($1, $2, $3) RETURNING *;',
+                values: [
+                  location.id,
+                  location.name,
+                  location.description
+                ]
+              })
+                .then((res2) => {
+                  if (res2.rows.length > 0) {
+                    return {
+                      success: true,
+                    }
+                  }
+                  return {
+                    success: false
+                  }
+                })
+                .catch((err) => {
+                  return {
+                    success: false
+                  }
+                })
+            }
+          })
+          res.rows[0].positions.forEach(async (position: { id: string, name: string, description: string }) => {
+            const positionDb = await conn.query({
+              text: 'SELECT * FROM positions WHERE id=$1',
+              values: [
+                position.id
+              ]
+            })
+              .then((res2) => {
+                if (res2.rows.length > 0) {
+                  return {
+                    exists: true,
+                    posId: res2.rows[0].id
+                  }
+                }
+                return {
+                  exists: false,
+                  posId: null
+                }
+              })
+              .catch((err) => {
+                return {
+                  exists: false,
+                  posId: null,
+                }
+              })
+            if (!positionDb.exists) {
+              await conn.query({
+                text: 'INSERT INTO "positions" ("id", "name", "description") VALUES ($1, $2, $3) RETURNING *;',
+                values: [
+                  position.id,
+                  position.name,
+                  position.description
+                ]
+              })
+                .then((res2) => {
+                  if (res2.rows.length > 0) {
+                    return {
+                      success: true,
+                    }
+                  }
+                  return {
+                    success: false
+                  }
+                })
+                .catch((err) => {
+                  return {
+                    success: false
+                  }
+                })
+            }
+          })
           return {
             code: 201,
             success: true,
@@ -162,6 +264,108 @@ export default function (conn: PoolClient) {
       })
         .then((res) => {
           console.log(res.rows[0])
+          res.rows[0].locations.forEach(async (location: { id: string, name: string, description: string }) => {
+            const locationDb = await conn.query({
+              text: 'SELECT * FROM locations WHERE id=$1',
+              values: [
+                location.id
+              ]
+            })
+              .then((res2) => {
+                if (res2.rows.length > 0) {
+                  return {
+                    exists: true,
+                    posId: res2.rows[0].id
+                  }
+                }
+                return {
+                  exists: false,
+                  posId: null
+                }
+              })
+              .catch((err) => {
+                return {
+                  exists: false,
+                  posId: null,
+                }
+              })
+            if (!locationDb.exists) {
+              await conn.query({
+                text: 'INSERT INTO "locations" ("id", "name", "description") VALUES ($1, $2, $3) RETURNING *;',
+                values: [
+                  location.id,
+                  location.name,
+                  location.description
+                ]
+              })
+                .then((res2) => {
+                  if (res2.rows.length > 0) {
+                    return {
+                      success: true,
+                    }
+                  }
+                  return {
+                    success: false
+                  }
+                })
+                .catch((err) => {
+                  return {
+                    success: false
+                  }
+                })
+            }
+          })
+          res.rows[0].positions.forEach(async (position: { id: string, name: string, description: string }) => {
+            const positionDb = await conn.query({
+              text: 'SELECT * FROM positions WHERE id=$1',
+              values: [
+                position.id
+              ]
+            })
+              .then((res2) => {
+                if (res2.rows.length > 0) {
+                  return {
+                    exists: true,
+                    posId: res2.rows[0].id
+                  }
+                }
+                return {
+                  exists: false,
+                  posId: null
+                }
+              })
+              .catch((err) => {
+                return {
+                  exists: false,
+                  posId: null,
+                }
+              })
+            if (!positionDb.exists) {
+              await conn.query({
+                text: 'INSERT INTO "positions" ("id", "name", "description") VALUES ($1, $2, $3) RETURNING *;',
+                values: [
+                  position.id,
+                  position.name,
+                  position.description
+                ]
+              })
+                .then((res2) => {
+                  if (res2.rows.length > 0) {
+                    return {
+                      success: true,
+                    }
+                  }
+                  return {
+                    success: false
+                  }
+                })
+                .catch((err) => {
+                  return {
+                    success: false
+                  }
+                })
+            }
+          })
           return {
             code: 200,
             success: true,
@@ -227,6 +431,57 @@ export default function (conn: PoolClient) {
           locations: []
         }
       }
+
+      const locationDb = await conn.query({
+        text: 'SELECT * FROM locations WHERE id=$1',
+        values: [
+          location.id
+        ]
+      })
+        .then((res) => {
+          if (res.rows.length > 0) {
+            return {
+              exists: true,
+              posId: res.rows[0].id
+            }
+          }
+          return {
+            exists: false,
+            posId: null
+          }
+        })
+        .catch((err) => {
+          return {
+            exists: false,
+            posId: null,
+          }
+        })
+      if (!locationDb.exists) {
+        await conn.query({
+          text: 'INSERT INTO "locations" ("id", "name", "description") VALUES ($1, $2, $3) RETURNING *;',
+          values: [
+            location.id,
+            location.name,
+            location.description
+          ]
+        })
+          .then((res) => {
+            if (res.rows.length > 0) {
+              return {
+                success: true,
+              }
+            }
+            return {
+              success: false
+            }
+          })
+          .catch((err) => {
+            return {
+              success: false
+            }
+          })
+      }
+
       const organization = await this.getOrganization(id, token)
       if (!organization.success) {
         return {
@@ -310,6 +565,56 @@ export default function (conn: PoolClient) {
           positions: []
         }
       }
+      const positionDb = await conn.query({
+        text: 'SELECT * FROM positions WHERE id=$1',
+        values: [
+          position.id
+        ]
+      })
+        .then((res) => {
+          if (res.rows.length > 0) {
+            return {
+              exists: true,
+              posId: res.rows[0].id
+            }
+          }
+          return {
+            exists: false,
+            posId: null
+          }
+        })
+        .catch((err) => {
+          return {
+            exists: false,
+            posId: null,
+          }
+        })
+      if (!positionDb.exists) {
+        await conn.query({
+          text: 'INSERT INTO "positions" ("id", "name", "description") VALUES ($1, $2, $3) RETURNING *;',
+          values: [
+            position.id,
+            position.name,
+            position.description
+          ]
+        })
+          .then((res) => {
+            if (res.rows.length > 0) {
+              return {
+                success: true,
+              }
+            }
+            return {
+              success: false
+            }
+          })
+          .catch((err) => {
+            return {
+              success: false
+            }
+          })
+      }
+
       const organization = await this.getOrganization(id, token)
       if (!organization.success) {
         return {
@@ -344,11 +649,73 @@ export default function (conn: PoolClient) {
         positions: organization.positions
       }
     },
-    async getOrganizationsByPosition() {
-
+    async getOrganizationsByPosition(id: string, token: string) {
+      const authenticatedUser = await this.getUserIdFromToken(token)
+      if (!authenticatedUser.success) {
+        return {
+          code: 403,
+          success: false,
+          organizations: []
+        }
+      }
+      const dbResponse = conn.query({
+        text: `SELECT * FROM organizations`,
+        values: []
+      })
+        .then((res) => {
+          console.log(res.rows)
+          let orgs = []
+          for (let i = 0; i < res.rows.length; i++) {
+            for (let j = 0; j < res.rows[i].positions.length; j++) {
+              if (res.rows[i].positions[j].id === id) {
+                orgs.push(res.rows[i])
+                break
+              }
+            }
+          }
+          return {
+            code: 200,
+            success: true,
+            organizations: orgs
+          }
+        })
+        .catch((err) => {
+          console.error(err)
+          return {
+            code: 404,
+            success: false,
+            organizations: []
+          }
+        })
+      return dbResponse
     },
-    async updateOrganizationRanking() {
-
+    async updateOrganizationRating(id: string, rating: Number, token: string) {
+      const authenticatedUser = await this.getUserIdFromToken(token)
+      if (!authenticatedUser.success) {
+        return {
+          code: 403,
+          success: false,
+        }
+      }
+      const organization = await this.getOrganization(id, token)
+      if (!organization.success) {
+        return {
+          code: 404,
+          success: false
+        }
+      }
+      organization.rating = rating
+      const updateOrganizationResponse = await this.updateOrganization(id, token, organization.name, organization.locations, organization.positions, organization.rating, organization.description)
+      if (!updateOrganizationResponse.success) {
+        return {
+          code: 400,
+          success: false
+        }
+      }
+      return {
+        code: 200,
+        success: true
+      }
     },
     async getUserIdFromToken(token: string) {
       const dbResponse = conn.query({

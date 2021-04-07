@@ -90,10 +90,12 @@ export const actions = {
                 console.error(err)
             })
     },
-    createAccount({ dispatch }, { username, password }) {
+    createAccount({ dispatch }, { firstname, lastname, username, password }) {
         const result = fetch("http://localhost:3000/api/accounts", {
             method: "POST",
             body: JSON.stringify({
+                firstName: firstname,
+                lastName: lastname,
                 username: username,
                 password: password,
             }),

@@ -257,5 +257,62 @@ export default function (pool: PoolClient) {
           })
         })
     },
+    async getOrganizationsByPosition(req: express.Request, res: express.Response) {
+      if (!req.header('authtoken')) {
+        res.status(403)
+        res.send({
+          success: false,
+          message: 'Invalid session. Please login again to continue'
+        })
+      }
+      const db = dbFactory(pool)
+      db.organizations.getOrganizationsByPosition(req.path.split('/')[3], req.header('authtoken')!)
+        .then((dbResponse) => {
+          if (!dbResponse.success) {
+            throw Error(dbResponse.code.toString())
+          }
+          res.status(200)
+          res.send({
+            success: true,
+            organizations: dbResponse.organizations
+          })
+        })
+        .catch((err) => {
+          console.error(err.message, ': Unable to get organizations by position id')
+          res.status(parseInt(err.message))
+          res.send({
+            success: false,
+            message: 'Unable to get organizations by position id'
+          })
+        })
+    },
+    async updateOrganizationRating(req: express.Request, res: express.Response) {
+      if (!req.header('authtoken')) {
+        res.status(403)
+        res.send({
+          success: false,
+          message: 'Invalid session. Please login again to continue'
+        })
+      }
+      const db = dbFactory(pool)
+      db.organizations.updateOrganizationRating(req.path.split('/')[2], req.body.rating, req.header('authtoken')!)
+        .then((dbResponse) => {
+          if (!dbResponse.success) {
+            throw Error(dbResponse.code.toString())
+          }
+          res.status(200)
+          res.send({
+            success: true,
+          })
+        })
+        .catch((err) => {
+          console.error(err)
+          res.status(parseInt(err.message))
+          res.send({
+            success: false,
+            message: err.message === '404' ? 'Unable to find Organization to update rating' : 'Unable to update Organization rating'
+          })
+        })
+    },
   }
 }

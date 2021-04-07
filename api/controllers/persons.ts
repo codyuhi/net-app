@@ -99,6 +99,7 @@ export default function (pool: PoolClient) {
               firstName: dbResponse.firstName,
               lastName: dbResponse.lastName,
               organizationId: dbResponse.organizationId,
+              positionId: dbResponse.positionId,
               network: dbResponse.network,
               dateRequested: dbResponse.dateRequested,
               dateContacted: dbResponse.dateContacted,
@@ -117,6 +118,7 @@ export default function (pool: PoolClient) {
         })
     },
     async updatePerson(req: express.Request, res: express.Response) {
+      console.log('ASDF')
       if (!req.header('authtoken')) {
         res.status(403)
         res.send({

@@ -4,6 +4,9 @@ import { v4 as uuid } from 'uuid'
 export default function (conn: PoolClient) {
   return {
     async createPerson(token: string, rootPerson: boolean, firstName: string, lastName: string, organizationId: string, positionId: string, network: string[], dateRequested: Date, dateContacted: Date, replied: boolean, description: string) {
+      if (!dateContacted) {
+        dateContacted = new Date()
+      }
       const authenticatedUser = await this.getUserIdFromToken(token)
       if (!authenticatedUser.success) {
         return {
@@ -140,7 +143,7 @@ export default function (conn: PoolClient) {
             firstName: res.rows[0].firstname,
             lastName: res.rows[0].lastname,
             organizationId: res.rows[0].organizationid,
-            positionId: res.rows[0].positionId,
+            positionId: res.rows[0].positionid,
             network: res.rows[0].network,
             dateRequested: res.rows[0].daterequested,
             dateContacted: res.rows[0].datecontacted,

@@ -24,6 +24,7 @@
     "core-js": "^3.8.3",
     "dotenv": "^8.2.0",
     "element-ui": "^2.15.0",
+    "moment": "^2.29.1",
     "nuxt": "^2.15.0",
     "openapi-enforcer": "^1.13.3",
     "openapi-enforcer-middleware": "^2.0.0-alpha-7",

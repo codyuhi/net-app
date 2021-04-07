@@ -50,6 +50,20 @@
           <br />
           <form>
             <p>
+              First Name<br /><input
+                v-model="firstname"
+                type="text"
+                placeholder="Enter First Name"
+              />
+            </p>
+            <p>
+              Last Name<br /><input
+                v-model="lastname"
+                type="text"
+                placeholder="Enter Last Name"
+              />
+            </p>
+            <p>
               Username<br /><input
                 v-model="username"
                 type="text"
@@ -92,6 +106,8 @@ import { state } from "@/store/accounts";
 export default Vue.extend({
   data() {
     return {
+      firstname: "",
+      lastname: "",
       username: "",
       password: "",
       views: [
@@ -101,16 +117,16 @@ export default Vue.extend({
         },
         {
           name: "My Person",
-          link: "/persons",
+          link: "/persons/" + state().person,
         },
         {
           name: "My Network",
           link: "/network",
         },
-        {
-          name: "My Applications",
-          link: "/applications",
-        },
+        // {
+        //   name: "My Applications",
+        //   link: "/applications",
+        // },
         {
           name: "Companies",
           link: "/companies",
@@ -143,6 +159,8 @@ export default Vue.extend({
       const result = await this.vuexCreateAccount({
         username: this.username,
         password: this.password,
+        firstname: this.firstname,
+        lastname: this.lastname,
       });
       if (result.errorExists) {
         this.error.exists = true;

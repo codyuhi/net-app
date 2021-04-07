@@ -11,7 +11,8 @@ export default Vue.extend({
   props: ["name", "link"],
   methods: {
     redirectView() {
-      window.location.href = this.link;
+      // window.location.href = this.link;
+      // console.log('going to', this.link)
     },
   },
 });

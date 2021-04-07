@@ -983,86 +983,90 @@ paths:
 #           - write-own
 #         - AdminAuth:
 #           - write-all
-#   /organizations/position/{positionId}:
-#     get:
-#       tags:
-#         - "organizations"
-#         - "positions"
-#         - "read"
-#       summary: "Get a list of Organizations based on Position"
-#       operationId: "get-organizations-by-position"
-#       parameters:
-#         - name: "positionId"
-#           in: "path"
-#           description: "The unique Position identifier"
-#           required: true
-#           schema:
-#             type: "string"
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       responses:
-#         "200":
-#           description: "Success"
-#           content:
-#             application/json:
-#               schema:
-#                 type: "array"
-#                 items:
-#                   $ref: "#/components/schemas/Organization"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "Unable to find object by id"
+  /api/organizations/position/{positionId}:
+    get:
+      tags:
+        - "organizations"
+        - "positions"
+        - "read"
+      x-controller: organizations
+      x-operation: getOrganizationsByPosition
+      summary: "Get a list of Organizations based on Position"
+      operationId: "getOrganizationsByPosition"
+      parameters:
+        - name: "positionId"
+          in: "path"
+          description: "The unique Position identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Organization"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
 #       security:
 #         - ApiKeyAuth:
 #           - read-all
 #         - AdminAuth:
 #           - read-all
-#   /organizations/{organizationId}/rating:
-#     put:
-#       tags:
-#         - "organizations"
-#         - "update"
-#       summary: "Update Organization rating"
-#       operationId: "update-organization-rating"
-#       parameters:
-#         - name: "organizationId"
-#           in: "path"
-#           description: "The unique Organization identifier"
-#           required: true
-#           schema:
-#             type: "string"
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       requestBody:
-#         required: true
-#         content:
-#           application/json:
-#             schema:
-#               properties:
-#                 rating:
-#                   type: "integer"
-#                   minimum: 0
-#                   maximum: 10
-#       responses:
-#         "200":
-#           description: "Success"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "Unable to find object by id"
+  /api/organizations/{organizationId}/rating:
+    put:
+      tags:
+        - "organizations"
+        - "update"
+      x-controller: organizations
+      x-operation: updateOrganizationRating
+      summary: "Update Organization rating"
+      operationId: "updateOrganizationRating"
+      parameters:
+        - name: "organizationId"
+          in: "path"
+          description: "The unique Organization identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                rating:
+                  type: "integer"
+                  minimum: 0
+                  maximum: 10
+      responses:
+        "200":
+          description: "Success"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
 #       security:
 #         - ApiKeyAuth:
 #           - write-own
@@ -1379,294 +1383,356 @@ paths:
 #         - AdminAuth:
 #           - read-all
 #   # # Location Endpoints
-#   /locations:
-#     post:
-#       tags:
-#         - "locations"
-#         - "create"
-#       summary: "Create Location"
-#       operationId: "create-location"
-#       parameters:
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       requestBody:
-#         required: true
-#         content:
-#           application/json:
-#             schema:
-#               $ref: "#/components/schemas/Location"
-#       responses:
-#         "201":
-#           description: "Created"
-#           content:
-#             applications/json:
-#               schema:
-#                 $ref: "#/components/schemas/Location"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
+  /api/locations:
+    post:
+      tags:
+        - "locations"
+        - "create"
+      x-controller: locations
+      x-operation: createLocation
+      summary: "Create Location"
+      operationId: "createLocation"
+      parameters:
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Location"
+      responses:
+        "201":
+          description: "Created"
+          content:
+            applications/json:
+              schema:
+                $ref: "#/components/schemas/Location"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+    get:
+      tags:
+        - "locations"
+        - "read"
+      x-controller: locations
+      x-operation: getLocations
+      summary: "Get Location"
+      operationId: "getLocations"
+      parameters:
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Created"
+          content:
+            applications/json:
+              schema:
+                $ref: "#/components/schemas/Location"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
 #       security:
 #         - ApiKeyAuth:
 #           - write-own
 #         - AdminAuth:
 #           - write-all
-#   /locations/{locationId}:
-#     get:
-#       tags:
-#         - "locations"
-#         - "read"
-#       summary: "Get Location by id"
-#       operationId: "get-location"
-#       parameters:
-#         - name: "locationId"
-#           in: "path"
-#           description: "The unique Location identifier"
-#           required: true
-#           schema:
-#             type: "integer"
-#             minimum: 0
-#             maximum: 8
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       responses:
-#         "200":
-#           description: "Success"
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: "#/components/schemas/Location"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "Unable to find object by id"
+  /api/locations/{locationId}:
+    get:
+      tags:
+        - "locations"
+        - "read"
+      x-controller: locations
+      x-operation: getLocation
+      summary: "Get Location by id"
+      operationId: "getLocation"
+      parameters:
+        - name: "locationId"
+          in: "path"
+          description: "The unique Location identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Location"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
 #       security:
 #         - ApiKeyAuth:
 #           - read-own
 #         - AdminAuth:
 #           - read-all
-#     put:
-#       tags:
-#         - "locations"
-#         - "update"
-#       summary: "Update Location"
-#       operationId: "update-location"
-#       parameters:
-#         - name: "locationId"
-#           in: "path"
-#           description: "The unique Location identifier"
-#           required: true
-#           schema:
-#             type: "integer"
-#             minimum: 0
-#             maximum: 8
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       requestBody:
-#         required: true
-#         content:
-#           application/json:
-#             schema:
-#               $ref: "#/components/schemas/Location"
-#       responses:
-#         "200":
-#           description: "Success"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "Unable to find object by id"
+    put:
+      tags:
+        - "locations"
+        - "update"
+      x-controller: locations
+      x-operation: updateLocation
+      summary: "Update Location"
+      operationId: "updateLocation"
+      parameters:
+        - name: "locationId"
+          in: "path"
+          description: "The unique Location identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Location"
+      responses:
+        "200":
+          description: "Success"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
 #       security:
 #         - ApiKeyAuth:
 #           - write-own
 #         - AdminAuth:
 #           - write-all
-#     delete:
-#       tags:
-#         - "locations"
-#         - "delete"
-#       summary: "Delete Location"
-#       operationId: "delete-location"
-#       parameters:
-#         - name: "locationId"
-#           in: "path"
-#           description: "The unique Location identifier"
-#           required: true
-#           schema:
-#             type: "integer"
-#             minimum: 0
-#             maximum: 8
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       responses:
-#         "204":
-#           description: "Deleted"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "Unable to find object by id"
+    delete:
+      tags:
+        - "locations"
+        - "delete"
+      x-controller: locations
+      x-operation: deleteLocation
+      summary: "Delete Location"
+      operationId: "deleteLocation"
+      parameters:
+        - name: "locationId"
+          in: "path"
+          description: "The unique Location identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "204":
+          description: "Deleted"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
 #       security:
 #         - ApiKeyAuth:
 #           - write-own
 #         - AdminAuth:
 #           - write-all
 #   # Position Endpoints
-#   /positions:
-#     summary: "Endpoint for operations related to Applications"
-#     post:
-#       tags:
-#         - "positions"
-#         - "create"
-#       summary: "Create Position"
-#       operationId: "create-position"
-#       requestBody:
-#         required: true
-#         content:
-#           application/json:
-#             schema:
-#               $ref: "#/components/schemas/Position"
-#       responses:
-#         "201":
-#           description: "Created"
-#           content:
-#             applications/json:
-#               schema:
-#                 $ref: "#/components/schemas/Position"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
+  /api/positions:
+    summary: "Endpoint for operations related to Applications"
+    post:
+      tags:
+        - "positions"
+        - "create"
+      x-controller: positions
+      x-operation: createPosition
+      summary: "Create Position"
+      operationId: "createPosition"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Position"
+      responses:
+        "201":
+          description: "Created"
+          content:
+            applications/json:
+              schema:
+                $ref: "#/components/schemas/Position"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
 #       security:
 #         - ApiKeyAuth:
 #           - write-own
 #         - AdminAuth:
 #           - write-all
-#   /positions/{positionId}:
-#     put:
-#       tags:
-#         - "positions"
-#         - "update"
-#       summary: "Update Position data"
-#       operationId: "update-position"
-#       parameters:
-#         - name: "positionId"
-#           in: "path"
-#           description: "The unique Position identifier"
-#           required: true
-#           schema:
-#             type: "string"
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       requestBody:
-#         required: true
-#         content:
-#           application/json:
-#             schema:
-#               $ref: "#/components/schemas/Position"
-#       responses:
-#         "200":
-#           description: "Success"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "Unable to find object by id"
+    get:
+      tags:
+        - "positions"
+        - "read"
+      x-controller: positions
+      x-operation: getPositions
+      summary: "Get Position"
+      operationId: "getPositions"
+      parameters:
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Created"
+          content:
+            applications/json:
+              schema:
+                $ref: "#/components/schemas/Position"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+  /api/positions/{positionId}:
+    put:
+      tags:
+        - "positions"
+        - "update"
+      x-controller: positions
+      x-operation: updatePosition
+      summary: "Update Position data"
+      operationId: "updatePosition"
+      parameters:
+        - name: "positionId"
+          in: "path"
+          description: "The unique Position identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Position"
+      responses:
+        "200":
+          description: "Success"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
 #       security:
 #         - ApiKeyAuth:
 #           - write-own
 #         - AdminAuth:
 #           - write-all
-#     get:
-#       tags:
-#         - "positions"
-#         - "read"
-#       summary: "Get Position by id"
-#       operationId: "get-position"
-#       parameters:
-#         - name: "positionId"
-#           in: "path"
-#           description: "The unique Position identifier"
-#           required: true
-#           schema:
-#             type: "string"
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       responses:
-#         "200":
-#           description: "Success"
-#           content:
-#             application/json:
-#               schema:
-#                 $ref: "#/components/schemas/Position"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "Unable to find object by id"
+    get:
+      tags:
+        - "positions"
+        - "read"
+      x-controller: positions
+      x-operation: getPosition
+      summary: "Get Position by id"
+      operationId: "getPosition"
+      parameters:
+        - name: "positionId"
+          in: "path"
+          description: "The unique Position identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "200":
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Position"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
 #       security:
 #         - ApiKeyAuth:
 #           - read-own
 #         - AdminAuth:
 #           - read-all
-#     delete:
-#       tags:
-#         - "positions"
-#         - "delete"
-#       summary: "Delete Position"
-#       operationId: "delete-position"
-#       parameters:
-#         - name: "positionId"
-#           in: "path"
-#           description: "The unique Position identifier"
-#           required: true
-#           schema:
-#             type: "string"
-#         - name: "authtoken"
-#           in: "header"
-#           description: "The Auth Token provided to the client after login"
-#           schema:
-#             type: "string"
-#           required: true
-#       responses:
-#         "204":
-#           description: "Deleted"
-#         "400":
-#           description: "Invalid request"
-#         "403":
-#           description: "Insufficient permissions"
-#         "404":
-#           description: "Unable to find object by id"
+    delete:
+      tags:
+        - "positions"
+        - "delete"
+      x-controller: positions
+      x-operation: deletePosition
+      summary: "Delete Position"
+      operationId: "deletePosition"
+      parameters:
+        - name: "positionId"
+          in: "path"
+          description: "The unique Position identifier"
+          required: true
+          schema:
+            type: "string"
+        - name: "authtoken"
+          in: "header"
+          description: "The Auth Token provided to the client after login"
+          schema:
+            type: "string"
+          required: true
+      responses:
+        "204":
+          description: "Deleted"
+        "400":
+          description: "Invalid request"
+        "403":
+          description: "Insufficient permissions"
+        "404":
+          description: "Unable to find object by id"
 #       security:
 #         - ApiKeyAuth:
 #           - write-own

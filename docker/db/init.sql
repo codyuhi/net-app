@@ -61,6 +61,30 @@ CREATE TABLE "organizations" (
 CREATE INDEX "organizationid" ON "organizations" ("id");
 
 --------------------
+-- Locations
+--------------------
+
+CREATE TABLE "locations" (
+    "id" character varying(40) NOT NULL,
+    "name" character varying(40) NOT NULL,
+    "description" character varying(40)
+);
+
+CREATE INDEX "locationid" ON "locations" ("id");
+
+--------------------
+-- Positions
+--------------------
+
+CREATE TABLE "positions" (
+    "id" character varying(40) NOT NULL,
+    "name" character varying(40) NOT NULL,
+    "description" character varying(40)
+);
+
+CREATE INDEX "positionid" ON "positions" ("id");
+
+--------------------
 -- netapp database
 --------------------
 

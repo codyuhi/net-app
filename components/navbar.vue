@@ -4,19 +4,23 @@
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item href="/"
-            ><font-awesome-icon icon="users" /> NetApp</b-nav-item
+          <b-nav-item
+            ><nuxt-link to="/"
+              ><font-awesome-icon icon="users" /> NetApp</nuxt-link
+            ></b-nav-item
           >
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto" v-if="loggedIn">
-          <b-nav-item href="/accounts">My User</b-nav-item>
-          <b-nav-item :href="personLink">Person</b-nav-item>
-          <b-nav-item @click="logout()">Logout</b-nav-item>
+          <b-nav-item><nuxt-link to="/accounts">My User</nuxt-link></b-nav-item>
+          <b-nav-item
+            ><nuxt-link :to="personLink">Person</nuxt-link></b-nav-item
+          >
+          <b-nav-item @click="logout()"><a>Logout</a></b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto" v-else>
-          <b-nav-item href="/">Login</b-nav-item>
+          <b-nav-item><nuxt-link to="/">Login</nuxt-link></b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -32,7 +36,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { mapState, mapActions } from "vuex";
-import {state, actions} from '@/store/accounts'
+import { state, actions } from "@/store/accounts";
 
 library.add(faUsers);
 
@@ -43,15 +47,13 @@ Vue.use(BootstrapVue);
 export default {
   data() {
     return {
-      personLink: state().token
-        ? "/persons/" + state().person
-        : "/",
+      personLink: state().token ? "/persons/" + state().person : "/",
     };
   },
   methods: {
     async logout() {
       if (state() && state().user) {
-        this.vuexLogout()
+        this.vuexLogout();
       }
     },
     ...mapActions({
@@ -81,5 +83,9 @@ export default {
 .bg-info {
   background-color: #284b63 !important;
   color: #ffffff !important;
+}
+
+a {
+  color: var(--light-color);
 }
 </style>
