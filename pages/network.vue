@@ -53,7 +53,7 @@ export default {
         this.isLoading = true;
         this.error = null;
         const response = await fetch(
-          "http://localhost:3000/api/persons/" + this.personId,
+          state().baseUrl + "/api/persons/" + this.personId,
           {
             method: "GET",
             headers: {
@@ -87,7 +87,7 @@ export default {
         this.error = null;
         for (let i = 0; i < this.person.network.length; i++) {
           let response = await fetch(
-            "http://localhost:3000/api/persons/" + this.person.network[i],
+            state().baseUrl + "/api/persons/" + this.person.network[i],
             {
               method: "GET",
               headers: {

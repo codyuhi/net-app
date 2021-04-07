@@ -6,7 +6,10 @@ export const state = () => ({
     token: localStorage.token ? JSON.parse(localStorage.token).token : '',
     user: localStorage.token ? JSON.parse(localStorage.token).id : '',
     person: localStorage.token ? JSON.parse(localStorage.token).rootPersonId : '',
-    editing: false
+    editing: false,
+    host: 'localhost',
+    port: '8000',
+    baseUrl: 'http://localhost:8000'
 })
 
 export const mutations = {
@@ -33,7 +36,7 @@ export const mutations = {
 
 export const actions = {
     login({ dispatch }, { username, password }) {
-        const result = fetch("http://localhost:3000/api/accounts/login", {
+        const result = fetch(state().baseUrl + "/api/accounts/login", {
             method: "POST",
             body: JSON.stringify({
                 username: username,
@@ -70,7 +73,7 @@ export const actions = {
     },
     logout() {
         const data = state()
-        const result = fetch("http://localhost:3000/api/accounts/logout", {
+        const result = fetch(state().baseUrl + "/api/accounts/logout", {
             method: "DELETE",
             headers: {
                 "authtoken": data.token
@@ -91,7 +94,7 @@ export const actions = {
             })
     },
     createAccount({ dispatch }, { firstname, lastname, username, password }) {
-        const result = fetch("http://localhost:3000/api/accounts", {
+        const result = fetch(state().baseUrl + "/api/accounts", {
             method: "POST",
             body: JSON.stringify({
                 firstName: firstname,
@@ -130,7 +133,7 @@ export const actions = {
     },
     getUser() {
         const data = state()
-        const user = fetch(`http://localhost:3000/api/accounts/${data.user}`, { headers: { authToken: data.token } })
+        const user = fetch(state().baseUrl + `/api/accounts/${data.user}`, { headers: { authToken: data.token } })
             .then((res) => {
                 return res.json()
             })
@@ -152,7 +155,7 @@ export const actions = {
     },
     updateUser({ dispatch }, { body }) {
         const data = state()
-        const result = fetch(`http://localhost:3000/api/accounts/${data.user}`, {
+        const result = fetch(state().baseUrl + `/api/accounts/${data.user}`, {
             method: "PUT",
             headers: {
                 authtoken: data.token,
@@ -182,7 +185,7 @@ export const actions = {
     },
     deleteUser() {
         const data = state()
-        const result = fetch(`http://localhost:3000/api/accounts/${data.user}`, {
+        const result = fetch(state().baseUrl + `/api/accounts/${data.user}`, {
             method: "DELETE",
             headers: {
                 authtoken: data.token,

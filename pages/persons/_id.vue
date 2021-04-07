@@ -170,7 +170,7 @@ export default {
         this.isLoading = true;
         this.error = null;
         const response = await fetch(
-          "http://localhost:3000/api" + this.$route.path,
+          state().baseUrl + "/api" + this.$route.path,
           {
             method: "GET",
             headers: {
@@ -196,7 +196,7 @@ export default {
         this.error = null;
         this.isLoading = true;
         const response = await fetch(
-          "http://localhost:3000/api/persons/" + this.person.id,
+          state().baseUrl + "/api/persons/" + this.person.id,
           {
             method: "PUT",
             body: JSON.stringify({
@@ -240,7 +240,7 @@ export default {
         this.error = null;
         this.isLoading = true;
         this.newPerson.network.push(state().person);
-        const response = await fetch("http://localhost:3000/api/persons", {
+        const response = await fetch(state().baseUrl + "/api/persons", {
           method: "POST",
           body: JSON.stringify(this.newPerson),
           headers: {
@@ -267,7 +267,7 @@ export default {
         this.isLoading = true;
         this.error = null;
         const response = await fetch(
-          "http://localhost:3000/api/persons/" + this.person.id,
+          state().baseUrl + "/api/persons/" + this.person.id,
           {
             method: "DELETE",
             headers: {
@@ -291,7 +291,7 @@ export default {
         this.isLoading = true;
         this.error = null;
         const response = await fetch(
-          "http://localhost:3000/api/persons/" + id + "/network",
+          state().baseUrl + "/api/persons/" + id + "/network",
           {
             method: "POST",
             headers: {
@@ -311,7 +311,7 @@ export default {
         this.isLoading = true;
         this.error = null;
         const response = await fetch(
-          "http://localhost:3000/api/persons/" + id + "/network/" + id,
+          state().baseUrl + "/api/persons/" + id + "/network/" + id,
           {
             method: "DELETE",
             headers: {
@@ -334,7 +334,7 @@ export default {
         this.isLoading = true;
         this.error = null;
         const response = await fetch(
-          "http://localhost:3000/api/organizations/" +
+          state().baseUrl + "/api/organizations/" +
             this.person.organizationId,
           {
             method: "GET",
@@ -364,7 +364,7 @@ export default {
         this.isLoading = true;
         this.error = null;
         const response = await fetch(
-          "http://localhost:3000/api/positions/" + this.person.positionId,
+          state().baseUrl + "/api/positions/" + this.person.positionId,
           {
             method: "GET",
             headers: {
@@ -390,7 +390,7 @@ export default {
         this.isLoading = true;
         this.error = null;
         const response = await fetch(
-          "http://localhost:3000/api/organizations",
+          state().baseUrl + "/api/organizations",
           {
             method: "GET",
             headers: {
@@ -415,7 +415,7 @@ export default {
       try {
         this.isLoading = true;
         this.error = null;
-        const response = await fetch("http://localhost:3000/api/positions", {
+        const response = await fetch(state().baseUrl + "/api/positions", {
           method: "GET",
           headers: {
             authtoken: state().token,
@@ -447,7 +447,7 @@ export default {
         this.error = null;
           for(let i = 0; i < this.person.network.length; i++) {
           let response = await fetch(
-            "http://localhost:3000/api/persons/" + this.person.network[i],
+            state().baseUrl + "/api/persons/" + this.person.network[i],
             {
               method: "GET",
               headers: {
